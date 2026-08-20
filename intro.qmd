@@ -1,0 +1,47 @@
+# Introductions {#sec-intro .unnumbered}
+
+Welcome to **EA 078 PZ: Environmental Data Visualization**!
+
+## Course Description
+
+This is an introductory course on the theory and practice of effective communication with quantitative data. This course will introduce the theory of data visualization, discuss the ethics of data visualization, provide hands-on training in acquiring, tidying, and visualizing quantitative environmental data, and critically examine current environmental justice tools (CalEnviroScreen, EPA's EJScreen, EPA's EnviroAtlas, CEJST).
+
+## About Me
+
+In descending order, these are my preferred forms of address.  Please choose the option you are most comfortable with.
+-   Mike
+-   Dr. Mike
+-   Professor Mike
+-   Dr. McCarthy
+-   Professor McCarthy
+
+My pronouns are he/him. Here is some of my background.
+
+-   [Adjunct Professor](https://en.wikipedia.org/wiki/Adjunct_professors_in_North_America) in Environmental Analysis Field Group
+-   I have been an Environmental Consultant for \~20 years
+    -   currently I am a sole proprietor at [Radical Research LLC](http://radicalresearch.llc/)
+-   Trained as a chemist/atmospheric chemist
+    -   undergrad at [Creighton University](https://www.creighton.edu) in Omaha, NE
+    -   grad school at [UC Berkeley](https://www.berkeley.edu)
+-   In my spare time, I enjoy fighting [warehouse development](https://radicalresearch.shinyapps.io/WarehouseCITY/) in my neighborhood and the IE 
+    - Vice Chair of [Riverside Neighbors Opposing Warehouses](https://sites.google.com/view/rivnow/) 
+    - Vice Chair of the Freight Communities Action Coalition
+    - Political Chair of [Sierra Club San Gorgonio Chapter](https://www.sierraclub.org/san-gorgonio)
+-   My goals for this course
+    -   explore and connect with your environmental interests
+    -   continuously improve my teaching to better meet your needs
+    -   learn new ways of thinking about problems
+    -   build tools and visualizations to empower, inform, and persuade our communities and elected officials
+    -   think critically about the role of AI and new tools in environmental data visualizaiton
+-   An uninteresting factoid about me
+    - I like to wear t-shirts
+    
+## About You
+
+Now it is your turn to introduce yourself. Please address the following four bullets. Please add anything else you think will be helpful for me and/or your colleagues to know about you.
+
+-   Name (as you would like to be addressed)
+-   Year
+-   Major/Field
+-   Your goal(s) for this course (if any)
+-   An uninteresting factoid about you

@@ -1,0 +1,76 @@
+project:
+  type: book
+  output-dir: docs
+
+book:
+  title: "Environmental Data Visualization - EA 078 Fall 2026"
+  subtitle: 'A course on the theory and practice of communication through data visualization'
+  author: "Michael McCarthy, PhD"
+  #affiliation: "Pitzer College"
+  date: today
+  chapters:
+    - index.qmd
+    - intro.qmd
+    - part: weather.qmd
+      chapters:
+      - information.qmd
+      - coding1.qmd
+    #  - maps1.qmd   
+   #   - maps2.qmd   
+    #  - chartJunk.qmd   
+   #   - assignment1.qmd
+#    - part: EJ.qmd  
+#      chapters:
+#      - EJtheory.qmd
+#      - EJcategories.qmd
+#      - EJdata.qmd
+#      - EJPolygons.qmd
+#      - assignment2.qmd
+#    - part: data.qmd  
+#      chapters:
+#      - import2.qmd  
+#      - export.qmd  
+#      - munging.qmd  
+#      - import3.qmd  
+#      - assignment3.qmd
+#    - part: projects.qmd
+#      chapters:
+#      - research.qmd 
+#      - AirQuality.qmd  
+#      - joins.qmd  
+#      - roads.qmd
+#      - shiny.qmd
+#      - maps4.qmd  
+#      - roads_rails_tracts_buffers.qmd
+#      - animate.qmd
+#      - dataTheory.qmd
+#      - SoCalEarth.qmd
+#      - assignment4.qmd
+  appendices: 
+    - syllabus.qmd  
+    - tools.qmd 
+    - resources.qmd 
+    - debugging.qmd 
+    - references.qmd
+  navbar:
+    left:
+      - href: index.qmd
+        text: Home
+      - about.qmd
+
+format:
+  live-html:
+    theme: united
+    toc: true
+    toc-depth: 4
+    code-link: true
+    knitr: true
+  #engine: knitr
+  #  engine: knitr
+  #  - {{< include ./_extensions/r-wasm/live/_knitr.qmd >}}
+
+bibliography: references.bib
+execute: 
+  freeze: auto
+
+

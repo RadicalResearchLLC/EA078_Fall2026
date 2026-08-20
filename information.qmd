@@ -1,0 +1,249 @@
+# Fundamentals of Data Visualization {#sec-information}
+
+::: {.callout-note appearance="simple"}
+Today we will be focusing on the theory of data visualization.
+:::
+
+## Data, Information, and Knowledge
+
+### What is data?
+
+-   Facts, or discrete elements of **information**.\
+-   quantitative or qualitative observations or descriptions
+-   statistics or values represented in a form suitable for processing by computer
+-   plural of *datum* (never ever use this, IMO, everything is data, singular or plural)
+
+### What is information?
+
+-   The act of informing or the condition of being informed; communication of **knowledge**
+-   Processed, stored, or transmitted **data**; structured data; data in context and significance
+-   Stimuli that has meaning in some context for its receiver
+
+### What is knowledge?
+
+-   General understanding or familiarity with a subject
+-   Awareness of a subject; the state of being informed
+-   Intellectual understanding; the state of appreciating the truth of **information**
+
+## Weather map example
+
+![LA Times Weather Map](images/LATimesWeather.jpg){#fig-WeatherMap}
+
+The visualization structures the underlying data into information. A good visualization communicates complex ideas with clarity, precision, and efficiency. It imparts knowledge.
+
+### Categories of information illustrated by the newspaper weather visualization
+
+-   [Quantitative](https://en.wikipedia.org/wiki/Level_of_measurement) (i.e., numerical) data
+    -   Temperatures (high, low)
+    -   Precipitation
+    -   Wind speeds and directions
+    -   Air quality index
+    -   UV index
+    -   Tide heights and times
+    -   Sunrise & sunset times
+-   [Qualitative](https://en.wikipedia.org/wiki/Qualitative_research) observations
+    -   'Seasonably warm'
+    -   'Fog, then mostly sunny'
+    -   Sky categories (partly cloudy, thunderstorms, rain, sunny, showers, fog, snow, ice)
+    -   Air quality categories (e.g., unhealthy, moderate)
+    -   Flood potential
+    -   Warm front/cold front
+    -   Low/high pressure
+    -   dangerous rip currents risk is moderate/low
+-   [Spatial](https://en.wikipedia.org/wiki/Spatial_analysis)
+    -   geographic properties
+    -   topology
+    -   geometric
+    -   distance
+    -   projections
+
+### Data encodings
+
+-   **Geometric primitives** such as points, lines, and areas
+-   **Visual channels** such as size, color, shape, position, angle, and texture
+
+Examples of these encodings are shown in @fig-encoding.
+
+![image credit: Nils Gehlenborg, ISMB/ECCB 2011](images/encodings.jpg){#fig-encoding}
+
+::: {.callout-note appearance="simple"}
+Why am I calling this **information**, and not *data* or *insight*?
+
+Why isn't this course called **Environmental Information Visualization**?
+:::
+
+## Abstraction
+
+When we talk about the weather and use a data visualization, we are abstracting from @fig-lightning to a 2-D representation of some numbers, colors, or pictures on a pixelized screen.
+
+![Palm Springs](images/palm_springs_lightning.jpg){#fig-lightning}
+
+🌩️🌩️🌩️🌩️🌩️🌩️🌩️🌩️🌩️🌩️🌩️🌩️🌩️🌩️🌩️🌩️🌩️🌩️🌩️🌩️🌩️🌩️🌩️
+
+Data visualization is an artistic abstraction.
+
+Any environmental data visualization is *not the thing itself*. We are abstracting *the thing itself* in order to represent it in a condensed and structured way that conveys information. A thunderstorm emoji conveys the information about the weather in an abstract way, but is not the weather. However, we can put that thunderstorm emoji
+
+-   on a map to provide spatial information
+-   on a clock to provide temporal information
+-   on a phone or an electronic device to communicate the weather in shorthand
+
+Similarly, the abstraction of data into information allows for substantial control over the stylistic choices. Just like art has impressionism, realism, and surrealism, there are many different schools of thought about the appropriate ways to convey information.
+
+In other words, the colors, symbols, shapes, and other stylistic choices encode and reveal truths about the data.
+
+## Ethics
+
+::: {.callout-note appearance="important"}
+Avoid misrepresention!
+:::
+
+Visualization methods can, purposefully or inadvertently, distort the underlying data's meaning. There are many underlying causes that can cause this distortion. Distortion can be caused (un)intentionly by the designer of the visualization. The other side is that the visualization may not be understandable to the user. Broadly, these problems can be categorized as:
+
+### Spatial projection
+
+2-Dimensional cartographic representations (i.e., maps) distort either
+
+-   [angles](https://map-projections.net/img/jpg/azimutal-equal-area-gpolar.jpg?ft=59bfd4f5),\
+-   [distances](https://image4.slideserve.com/303535/all-projections-have-some-degree-of-distortion-l.jpg), or\
+-   [sizes](https://kartoweb.itc.nl/geometrics/Bitmaps/Figure%204.19%20(scale%20distortion)a.gif)
+
+### Cognitive
+
+Problems associated with -
+
+-   graphical elements - "Roses are [red]{style="color:blue"}, violets are [blue]{style="color:red"}."
+-   over-simplification - compare ozone alert images from KTLA news and the SCAQMD.
+
+::: {layout-ncol="2"}
+![](https://ktla.com/wp-content/uploads/sites/4/2022/08/AQMD.OzoneMap.jpg)
+
+![](images/ozoneAQMD.jpg)
+:::
+
+-   under-simplification
+
+![Forward 24-hr wind trajectories from MacDonald et al., 2006, https://doi.org/10.1080/10473289.2006.10464509](images/MacDonald2006etal.png){#fig-MacDonaldetal2006}
+
+-   heterogeneity of intended audience (e.g., language barriers, color palettes for color-blindness).
+
+### **Emotional**
+
+Graphical design or [content](https://www.cdc.gov/nchs/nvss/vsrr/covid19/excess_deaths.htm) may be repellent or triggering. In the syllabus, the COVID sneeze imagery is both factual model data and an intentionally gross way of visualizing the data to generate a feeling of disgust.
+
+![A gross image of particles emissions from a sneeze](images/COVID_mask.png){#fig-Disgusting}
+
+### **Social**
+
+Cross-cultural norms -
+
+-   directionality of reading (left-to-right vs. right-to-left)
+-   context of color-scales (e.g., red-green in eastern vs. western cultures)
+
+Understanding the intended audience and their norms is always key to open and empathetic communication, whether through words or visualizations. Multiple visualizations may be required for communication with a diverse (i.e., heterogeneous) audience.
+
+## What is the Baseline?
+
+One of the most common distortions is changing the scale of the axis to distort magnitudes. Here's an example.
+
+The code below loads some R packages that are useful for data processing and visualization.
+
+```{r}
+#| warning: false
+#| message: false
+
+library(data.table)
+library(tidyverse)
+library(plotly)
+
+```
+
+This code imports monthly mean Mauna Loa CO~2~ data from [NOAA GMD CMDL](https://www.gml.noaa.gov/ccgg/trends/data.html), renames the columns, and then displays the bottom five rows to make sure it shows what we think it should. We'll show you how to do this next session.
+
+```{r}
+#| label: ImportCO2
+#| message: false
+
+
+co2 <- read_table('https://www.gml.noaa.gov/webdata/ccgg/trends/co2/co2_mm_mlo.txt',
+                  skip = 57 ) #%>%
+
+fieldNames <- c('year', 'month', 'decDate', 'meanCO2', 'trendedCO2', 'days', 'stdev', 'unc')
+colnames(co2) <- fieldNames
+
+tail(co2)
+head(co2)
+
+```
+
+The CO~2~ data is displayed in @fig-KeelingCurve1 and @fig-KeelingBase. How does the y-axis scale affect the interpretation of the same dataset?
+
+```{r}
+#| label: fig-KeelingCurve1
+#| fig-cap: The Keeling Curve showing monthly average CO~2~ concentrations (ppm) at Mauna Loa
+#| warning: false
+
+plot1 <- co2 %>% 
+  ggplot(aes(x = decDate, y = meanCO2)) +
+  geom_line() +
+  theme_bw() +
+  labs(x = 'Year', y = 'Concentration CO2 (ppm)')
+
+ggplotly(plot1)
+
+```
+
+```{r}
+#| label: fig-KeelingBase
+#| fig-cap: The Keeling Curve showing monthly average CO~2~ concentrations (ppm) at Mauna Loa
+#| warning: false
+
+plot2 <- plot1 + 
+  scale_y_continuous(limits = c(0,425))
+
+ggplotly(plot2)
+
+```
+
+A longer viewpoint is shown in @fig-paleoCO2 going back well beyond the late 1950s using CO~2~ data from ice cores, sediments, and other paleo-climatological sources. It shows another y-axis scale.
+
+How do the three different y-axis scales distort the user impression of the data?
+
+![HistoricalCO2](images/Co2-levels-historic.jpg){#fig-paleoCO2}
+
+## Color
+
+Color is fraught with peril and cultural associations. Moreover, roughly 10% of the population has some form of color-blindness.
+
+::: {.callout-note appearance="important"}
+Color is very commonly used to manipulate the audience in environmental data visualization.
+:::
+
+-   Be cognizant of how choosing a color palette manipulates the audience
+-   Don't use too many colors (rule of seven)
+-   Be aware of the three types of color palettes and choose the right one as in @fig-colorPalettes.
+    -   continuous sequential
+    -   categorical
+    -   continuous diverging
+
+![Rcolorbrewer color palettes](https://datavizpyr.com/wp-content/uploads/2020/01/R_ColorBrewer_all_palettes.jpg){#fig-colorPalettes}
+
+How does [CalEnviroScreen](https://oehha.ca.gov/calenviroscreen/report/calenviroscreen-40) look when changing from a `Blues` colorPalette to `viridis` `magma`?
+
+::: {layout-ncol="2"}
+![](images/bluesCalEJ.png)
+
+![](images/magmaCalEJ.png)
+:::
+
+Looking for more on color palettes? Check out this [r-graph-gallery](https://r-graph-gallery.com/color-palette-finder) post, or this [color harmony](https://medium.com/global-maksimum-data-information-technologies/color-harmony-in-data-visualization-2610f9dab390) blog post for marketing design.
+
+## Salience
+
+Visual salience is the distinctive perceptual measure of how much a visual stimuli stands out from its surrounding neighbors to grab an observer's attention.
+
+[Read this!](https://ucdavisdatalab.github.io/workshop_data_viz_principles/principles-of-visual-perception.html)
+
+::: {.callout-note appearance="important"}
+Focus on the pictures and captions to get an impression of visual salience. We'll be using this as reading as a topic for discussion.
+:::
