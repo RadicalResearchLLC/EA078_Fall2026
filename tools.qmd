@@ -3,7 +3,7 @@
 [R](https://www.r-project.org/) is a free software environment for statistical computing and graphics.
 Current version 4.6.1 "Happy Hop" was released June 24, 2026. [Download here](https://mirror.las.iastate.edu/CRAN/)!
 
-[RStudio](https://docs.posit.co/ide/user/#rstudio-ide-oss-downloads) is an integrated development environment (IDE) for R. It is available in open source and commercial editions. I recommend this class use RStudio 2026.07.1 Build 147. 
+[RStudio](https://docs.posit.co/ide/user/#rstudio-ide-oss-downloads) is an integrated development environment (IDE) for R. It is available in open source and commercial editions. I recommend this class use RStudio 2026.08.2 build 200. 
 
 These tools will be the primary software used in this course to develop environmental visualizations. Alternate tools/software can be used for assignments and projects, but I will not devote class time to troubleshooting those tools/software.  Other IDE options are available, including [Positron](https://positron.posit.co/) and [Posit Cloud](https://posit.cloud/). 
 

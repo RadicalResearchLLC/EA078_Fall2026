@@ -1,6 +1,6 @@
 ---
 description-meta: |
-  This book/website will serve as the course outline and lesson plan for the Fall 202 Pitzer College course 078 PZ - Environmental Data Visualization. 
+  This book/website will serve as the course outline and lesson plan for the Fall 2026 Pitzer College course 078 PZ - Environmental Data Visualization. 
 format: live-html
 engine: knitr
 ---

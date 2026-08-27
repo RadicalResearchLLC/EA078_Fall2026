@@ -391,10 +391,4 @@ ggplot(data = mpg, aes(x = cty, y = hwy, color = class)) +
 
 ```
 
-#### Noodle Zone 2
-
-```{webr}
-ggplot(data = mpg, aes(x = cty, y = hwy, color = class)) +
-  geom_point() 
-```
 
