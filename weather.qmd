@@ -6,7 +6,7 @@ It is a great example for us to start talking about environmental data. Addition
 
 ### Comparative Analysis
 
-Examine @fig-WeatherMap1 from the [Los Angeles Times](https://www.latimes.com), a [Twitter emoji weather map](https://twitter.com/EmojiWeatherUSA?lang=en), and a screenshot from [Wunderground](https://www.wunderground.com).
+Examine @fig-WeatherMap1 from the [Los Angeles Times](https://www.latimes.com), @fig-emojiMap - [Twitter emoji weather map](https://twitter.com/EmojiWeatherUSA?lang=en), @fig-Wunderground - a screenshot from [Wunderground](https://www.wunderground.com), and @fig-Nexrad - an interactive radar map of precipitation generated from R and [Iowa Environmental Mesonet](https://mesonet.agron.iastate.edu/api/#cgi) data.
 
 ::: {.callout-note appearance="simple"}
 What are your impressions of these different visualizations?
@@ -17,3 +17,22 @@ What are your impressions of these different visualizations?
 ![Twitter emoji Map](images/emojiWeather.png){#fig-emojiMap}
 
 ![Wunderground weather website and app](images/wunderground.png){#fig-Wunderground}
+
+```{r}
+#| label: fig-Nexrad
+#| fig-cap: Precipitation data from weather radar data product
+#| warning: false
+
+library(leaflet)
+
+leaflet() |> 
+  addTiles() |> 
+  setView(lng = -110.4, lat = 35.9, zoom = 4) |> 
+  addWMSTiles(
+    "http://mesonet.agron.iastate.edu/cgi-bin/wms/nexrad/n0q.cgi",
+    layers = "nexrad-n0q-m05m",
+    options = WMSTileOptions(format = "image/png", transparent = TRUE),
+    attribution = "Weather data © 2012 IEM Nexrad"
+  )
+
+```
