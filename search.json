@@ -81,7 +81,7 @@
     "href": "weather.html",
     "title": "Unit 1: Introduction to Data Visualization",
     "section": "",
-    "text": "The most common environmental dataset that people encounter is the weather. Every major type of media devotes time to the weather: newspapers, news shows, apps, twitter bots, and The Weather Channel.\nIt is a great example for us to start talking about environmental data. Additionally, the weather is often confused for the climate. Given the existential threat of Climate Change, we’ll explore, replicate, and maybe improve some climate visualizations.\n\nComparative Analysis\nExamine Figure 1 from the Los Angeles Times, a Twitter emoji weather map, and a screenshot from Wunderground.\n\n\n\n\n\n\nWhat are your impressions of these different visualizations?\n\n\n\n\n\n\n\n\n\nFigure 1: Los Angeles Times Weather Map\n\n\n\n\n\n\n\n\n\nFigure 2: Twitter emoji Map\n\n\n\n\n\n\n\n\n\nFigure 3: Wunderground weather website and app",
+    "text": "The most common environmental dataset that people encounter is the weather. Every major type of media devotes time to the weather: newspapers, news shows, apps, twitter bots, and The Weather Channel.\nIt is a great example for us to start talking about environmental data. Additionally, the weather is often confused for the climate. Given the existential threat of Climate Change, we’ll explore, replicate, and maybe improve some climate visualizations.\nComparative Analysis\nExamine Figure 1 from the Los Angeles Times, Figure 2 - Twitter emoji weather map, Figure 3 - a screenshot from Wunderground, and Figure 4 - an interactive radar map of precipitation generated from R and Iowa Environmental Mesonet data.\n\n\n\n\n\n\nWhat are your impressions of these different visualizations?\n\n\n\n\n\n\n\n\nFigure 1: Los Angeles Times Weather Map\n\n\n\n\n\n\n\nFigure 2: Twitter emoji Map\n\n\n\n\n\n\n\nFigure 3: Wunderground weather website and app\n\n\n\nlibrary(leaflet)\n\nleaflet() |&gt; \n  addTiles() |&gt; \n  setView(lng = -110.4, lat = 35.9, zoom = 4) |&gt; \n  addWMSTiles(\n    \"http://mesonet.agron.iastate.edu/cgi-bin/wms/nexrad/n0q.cgi\",\n    layers = \"nexrad-n0q-m05m\",\n    options = WMSTileOptions(format = \"image/png\", transparent = TRUE),\n    attribution = \"Weather data © 2012 IEM Nexrad\"\n  )\n\n\n\n\n\n\nFigure 4: Precipitation data from weather radar data product",
     "crumbs": [
       "Home",
       "Unit 1: Introduction to Data Visualization"
@@ -392,7 +392,7 @@
     "href": "syllabus.html#office-hours",
     "title": "Appendix A — Course Syllabus",
     "section": "\nA.8 Office Hours",
-    "text": "A.8 Office Hours\n\nMonday 9:00 - 9:30 (before class - in classroom\nTuesday 11:00 - 12:00 zoom\n\nWednesday at 9:00 - 9:30 (before class) - in classroom\nFriday 9:00 - 10:00 zoom",
+    "text": "A.8 Office Hours\n\nMonday 9:00 - 9:30 (before class - in classroom)\nTuesday 11:00 - 12:00 zoom\n\nWednesday at 9:00 - 9:30 (before class) - in classroom\nFriday 9:00 - 10:00 zoom",
     "crumbs": [
       "Home",
       "Appendices",
