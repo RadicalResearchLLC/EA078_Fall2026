@@ -1,0 +1,51 @@
+# Chartjunk, Data-Ink Ratios, and Visualization Theory {#sec-chartJunk}
+
+::: {.callout-note appearance="simple"}
+Today we will be focusing on the theory of data visualization. 
+:::
+
+## Chartjunk
+
+Chart Junk is a term first used by Edward Tufte (and developed in coordination with John Tukey) in his book _The Quantitative Display of Visual Information_ @Tufte2001. He defined it as:
+
+::: {.callout-note appearance="simple"}
+The interior decoration of graphics generates a lot of ink that does not tell the viewer anything new.  The purpose of decoration varies-to make the graphic appear more scientific and precise, to enliven the display, to give the designer an opportunity to exercise artistic skills. Regardless of its cause it is all non-data-ink or redundant data-ink, and it is often chartjunk.
+:::
+
+In other words, Tufte believes that embellishment, decoration, and ornamentation is typically bad in a data visualization. 
+
+Here's a few examples.
+
+@fig-Mario shows a very simple bar chart with lots of colors, patterns, and 
+
+![Mario looking bar chart](https://upload.wikimedia.org/wikipedia/commons/c/c9/Chartjunk-example.svg){#fig-Mario}
+
+@fig-Diamonds shows a price line chart embellished with a decorative reclining lady. This is what Tufte calls a **Duck** - elevating design over data.  
+
+![Infamous diamonds line](https://businessq-software.com/wp-content/uploads/2019/02/6-1.png){#fig-Diamonds}
+
+@fig-MentalHealth shows a pie chart of video analysis by medical professionals. Only three values are shown, yet there is a flourish of colors, cartoons, clipart, and embellishment.  
+
+![Pie Chartjunk](https://preview.redd.it/dwq6o8q4ko2a1.png?width=1536&format=png&auto=webp&s=cfab5e9fc693e6f07343f8d6b4f919bdf35d8120){#fig-MentalHealth}
+
+Tufte was a minimalist. He is a pro-modernist design and anti-baroque design. Some research that suggests more ornamented and interesting visualizations stick with people longer than minimal designs.
+
+## Data-Ink Ratios
+
+The second Tufte-ism is the ratio of data-ink. This is a quantitative measure indicating the amount of 'ink' used to convey data/information in a visualization. Any 'ink' not conveying information is considered superfluous and redundant.
+
+![Data Ink Ratio](https://infovis-wiki.net/w/images/5/55/DIR.jpg)
+
+A simple example from the tidyverse would be to compare the default theme for a `ggplot()` with `theme_bw()` or `theme_minimal()`. 
+
+Here's [Figure 4-2](https://radicalresearch.llc/EA078_Fall2026/maps2.html#fig-ggBasic) with the default theme. Notice all that background 'ink' is gray. 
+
+Tufte would definitely prefer [Figure 4-5](https://radicalresearch.llc/EA078_Fall2026/maps2.html#fig-ggMinimal) where we removed all that background and even the frame around the outside of the map.
+
+This is an aesthetic preference, especially in the modern era where almost all of the visualization we engage with is on a computer/tablet/phone. 
+
+
+
+
+
+

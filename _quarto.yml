@@ -17,8 +17,7 @@ book:
       - coding1.qmd
       - maps1.qmd   
       - maps2.qmd   
-#      - chartJunk.qmd   
-
+      - chartJunk.qmd   
 #    - part: EJ.qmd  
 #      chapters:
 #      - EJtheory.qmd

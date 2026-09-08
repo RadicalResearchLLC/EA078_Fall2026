@@ -154,7 +154,7 @@ The code below loads some R packages that are useful for data processing and vis
 
 library(data.table)
 library(tidyverse)
-#library(plotly)
+library(plotly)
 
 ```
 
