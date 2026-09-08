@@ -152,7 +152,7 @@
     "href": "information.html#what-is-the-baseline",
     "title": "1  Fundamentals of Data Visualization",
     "section": "\n1.5 What is the Baseline?",
-    "text": "1.5 What is the Baseline?\nOne of the most common distortions is changing the scale of the axis to distort magnitudes. Here’s an example.\nThe code below loads some R packages that are useful for data processing and visualization.\n\nlibrary(data.table)\nlibrary(tidyverse)\nlibrary(plotly)\n\nThis code imports monthly mean Mauna Loa CO2 data from NOAA GMD CMDL, renames the columns, and then displays the bottom five rows to make sure it shows what we think it should. We’ll show you how to do this next session.\n\nco2 &lt;- read_table('https://www.gml.noaa.gov/webdata/ccgg/trends/co2/co2_mm_mlo.txt',\n                  skip = 57 ) #%&gt;%\n\nfieldNames &lt;- c('year', 'month', 'decDate', 'meanCO2', 'trendedCO2', 'days', 'stdev', 'unc')\ncolnames(co2) &lt;- fieldNames\n\ntail(co2)\n\n# A tibble: 6 × 8\n   year month decDate meanCO2 trendedCO2  days stdev   unc\n  &lt;dbl&gt; &lt;dbl&gt;   &lt;dbl&gt;   &lt;dbl&gt;      &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;\n1  2026     2   2026.    429.       428.    17  0.74  0.34\n2  2026     3   2026.    430.       429.    26  0.87  0.33\n3  2026     4   2026.    431.       429.    23  1.16  0.46\n4  2026     5   2026.    432.       429.    17  0.67  0.31\n5  2026     6   2026.    431.       429.    19  0.28  0.12\n6  2026     7   2027.    429.       429.    21  0.59  0.25\n\nhead(co2)\n\n# A tibble: 6 × 8\n   year month decDate meanCO2 trendedCO2  days stdev   unc\n  &lt;dbl&gt; &lt;dbl&gt;   &lt;dbl&gt;   &lt;dbl&gt;      &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;\n1  1959     7   1960.    317.       316.    -1 -9.99 -0.99\n2  1959     8   1960.    315.       316.    -1 -9.99 -0.99\n3  1959     9   1960.    314.       317.    -1 -9.99 -0.99\n4  1959    10   1960.    313.       316.    -1 -9.99 -0.99\n5  1959    11   1960.    315.       317.    -1 -9.99 -0.99\n6  1959    12   1960.    316.       316.    -1 -9.99 -0.99\n\n\nThe CO2 data is displayed in Figure 1.6 and Figure 1.7. How does the y-axis scale affect the interpretation of the same dataset?\n\nplot1 &lt;- co2 %&gt;% \n  ggplot(aes(x = decDate, y = meanCO2)) +\n  geom_line() +\n  theme_bw() +\n  labs(x = 'Year', y = 'Concentration CO2 (ppm)')\n\nggplotly(plot1)\n\n\n\n\n\n\nFigure 1.6: The Keeling Curve showing monthly average CO2 concentrations (ppm) at Mauna Loa\n\n\n\n\nplot2 &lt;- plot1 + \n  scale_y_continuous(limits = c(0,425))\n\nggplotly(plot2)\n\n\n\n\n\n\nFigure 1.7: The Keeling Curve showing monthly average CO2 concentrations (ppm) at Mauna Loa\n\n\n\nA longer viewpoint is shown in Figure 1.8 going back well beyond the late 1950s using CO2 data from ice cores, sediments, and other paleo-climatological sources. It shows another y-axis scale.\nHow do the three different y-axis scales distort the user impression of the data?\n\n\n\n\n\nFigure 1.8: HistoricalCO2",
+    "text": "1.5 What is the Baseline?\nOne of the most common distortions is changing the scale of the axis to distort magnitudes. Here’s an example.\nThe code below loads some R packages that are useful for data processing and visualization.\n\nlibrary(data.table)\nlibrary(tidyverse)\nlibrary(plotly)\n\nThis code imports monthly mean Mauna Loa CO2 data from NOAA GMD CMDL, renames the columns, and then displays the bottom five rows to make sure it shows what we think it should. We’ll show you how to do this next session.\n\nco2 &lt;- read_table('https://www.gml.noaa.gov/webdata/ccgg/trends/co2/co2_mm_mlo.txt',\n                  skip = 57 ) #%&gt;%\n\nfieldNames &lt;- c('year', 'month', 'decDate', 'meanCO2', 'trendedCO2', 'days', 'stdev', 'unc')\ncolnames(co2) &lt;- fieldNames\n\ntail(co2)\n\n# A tibble: 6 × 8\n   year month decDate meanCO2 trendedCO2  days stdev   unc\n  &lt;dbl&gt; &lt;dbl&gt;   &lt;dbl&gt;   &lt;dbl&gt;      &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;\n1  2026     2   2026.    429.       428.    17  0.74  0.34\n2  2026     3   2026.    430.       429.    26  0.87  0.33\n3  2026     4   2026.    431.       429.    23  1.16  0.46\n4  2026     5   2026.    432.       429.    17  0.67  0.31\n5  2026     6   2026.    431.       429.    19  0.28  0.12\n6  2026     7   2027.    429.       429.    21  0.59  0.25\n\nhead(co2)\n\n# A tibble: 6 × 8\n   year month decDate meanCO2 trendedCO2  days stdev   unc\n  &lt;dbl&gt; &lt;dbl&gt;   &lt;dbl&gt;   &lt;dbl&gt;      &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;\n1  1959     7   1960.    317.       316.    -1 -9.99 -0.99\n2  1959     8   1960.    315.       316.    -1 -9.99 -0.99\n3  1959     9   1960.    314.       317.    -1 -9.99 -0.99\n4  1959    10   1960.    313.       316.    -1 -9.99 -0.99\n5  1959    11   1960.    315.       317.    -1 -9.99 -0.99\n6  1959    12   1960.    316.       316.    -1 -9.99 -0.99\n\n\nThe CO2 data is displayed in Figure 1.6 and Figure 1.7. How does the y-axis scale affect the interpretation of the same dataset?\n\nplot1 &lt;- co2 %&gt;% \n  ggplot(aes(x = decDate, y = meanCO2)) +\n  geom_line() +\n  theme_bw() +\n  labs( y = expression(Concentration~CO['2']~\"(ppm)\"),\n        x = 'Year', \n      )\n\nplot1\n#ggplotly(plot1)\n\n\n\n\n\n\nFigure 1.6: The Keeling Curve showing monthly average CO2 concentrations (ppm) at Mauna Loa\n\n\n\n\n\nplot2 &lt;- plot1 + \n  scale_y_continuous(limits = c(0,440)) +\n  labs(y = 'Concentration CO2 (ppm)')\n\nggplotly(plot2)\n\n\n\n\n\n\nFigure 1.7: The Keeling Curve showing monthly average CO2 concentrations (ppm) at Mauna Loa\n\n\n\nA longer viewpoint is shown in Figure 1.8 going back well beyond the late 1950s using CO2 data from ice cores, sediments, and other paleo-climatological sources. It shows another y-axis scale.\nHow do the three different y-axis scales distort the user impression of the data?\n\n\n\n\n\nFigure 1.8: HistoricalCO2",
     "crumbs": [
       "Home",
       "Unit 1: Introduction to Data Visualization",
@@ -301,6 +301,54 @@
       "Home",
       "Unit 1: Introduction to Data Visualization",
       "<span class='chapter-number'>4</span>  <span class='chapter-title'>Introduction to Spatial Visualization 2</span>"
+    ]
+  },
+  {
+    "objectID": "chartJunk.html",
+    "href": "chartJunk.html",
+    "title": "5  Chartjunk, Data-Ink Ratios, and Visualization Theory",
+    "section": "",
+    "text": "5.1 Chartjunk\nChart Junk is a term first used by Edward Tufte (and developed in coordination with John Tukey) in his book The Quantitative Display of Visual Information (Tufte2001?). He defined it as:\nIn other words, Tufte believes that embellishment, decoration, and ornamentation is typically bad in a data visualization.\nHere’s a few examples.\nFigure 5.1 shows a very simple bar chart with lots of colors, patterns, and\nFigure 5.2 shows a price line chart embellished with a decorative reclining lady. This is what Tufte calls a Duck - elevating design over data.\nFigure 5.3 shows a pie chart of video analysis by medical professionals. Only three values are shown, yet there is a flourish of colors, cartoons, clipart, and embellishment.\nTufte was a minimalist. He is a pro-modernist design and anti-baroque design. Some research that suggests more ornamented and interesting visualizations stick with people longer than minimal designs.",
+    "crumbs": [
+      "Home",
+      "Unit 1: Introduction to Data Visualization",
+      "<span class='chapter-number'>5</span>  <span class='chapter-title'>Chartjunk, Data-Ink Ratios, and Visualization Theory</span>"
+    ]
+  },
+  {
+    "objectID": "chartJunk.html#chartjunk",
+    "href": "chartJunk.html#chartjunk",
+    "title": "5  Chartjunk, Data-Ink Ratios, and Visualization Theory",
+    "section": "",
+    "text": "The interior decoration of graphics generates a lot of ink that does not tell the viewer anything new. The purpose of decoration varies-to make the graphic appear more scientific and precise, to enliven the display, to give the designer an opportunity to exercise artistic skills. Regardless of its cause it is all non-data-ink or redundant data-ink, and it is often chartjunk.\n\n\n\n\n\n\n\n\n\n\n\n\nFigure 5.1: Mario looking bar chart\n\n\n\n\n\n\n\n\n\n\nFigure 5.2: Infamous diamonds line\n\n\n\n\n\n\n\n\n\n\nFigure 5.3: Pie Chartjunk",
+    "crumbs": [
+      "Home",
+      "Unit 1: Introduction to Data Visualization",
+      "<span class='chapter-number'>5</span>  <span class='chapter-title'>Chartjunk, Data-Ink Ratios, and Visualization Theory</span>"
+    ]
+  },
+  {
+    "objectID": "chartJunk.html#data-ink-ratios",
+    "href": "chartJunk.html#data-ink-ratios",
+    "title": "5  Chartjunk, Data-Ink Ratios, and Visualization Theory",
+    "section": "5.2 Data-Ink Ratios",
+    "text": "5.2 Data-Ink Ratios\nThe second Tufte-ism is the ratio of data-ink. This is a quantitative measure indicating the amount of ‘ink’ used to convey data/information in a visualization. Any ‘ink’ not conveying information is considered superfluous and redundant.\n\n\n\nData Ink Ratio\n\n\nA simple example from the tidyverse would be to compare the default theme for a ggplot() with theme_bw() or theme_minimal().\nHere’s Figure 4-2 with the default theme. Notice all that background ‘ink’ is gray.\nTufte would definitely prefer Figure 4-5 where we removed all that background and even the frame around the outside of the map.\nThis is an aesthetic preference, especially in the modern era where almost all of the visualization we engage with is on a computer/tablet/phone.",
+    "crumbs": [
+      "Home",
+      "Unit 1: Introduction to Data Visualization",
+      "<span class='chapter-number'>5</span>  <span class='chapter-title'>Chartjunk, Data-Ink Ratios, and Visualization Theory</span>"
+    ]
+  },
+  {
+    "objectID": "chartJunk.html#data-visualization-for-ggplot",
+    "href": "chartJunk.html#data-visualization-for-ggplot",
+    "title": "5  Chartjunk, Data-Ink Ratios, and Visualization Theory",
+    "section": "5.3 Data Visualization for ggplot",
+    "text": "5.3 Data Visualization for ggplot\nADD Grammar of Graphics.",
+    "crumbs": [
+      "Home",
+      "Unit 1: Introduction to Data Visualization",
+      "<span class='chapter-number'>5</span>  <span class='chapter-title'>Chartjunk, Data-Ink Ratios, and Visualization Theory</span>"
     ]
   },
   {
