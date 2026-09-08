@@ -154,7 +154,7 @@ The code below loads some R packages that are useful for data processing and vis
 
 library(data.table)
 library(tidyverse)
-library(plotly)
+#library(plotly)
 
 ```
 
@@ -187,9 +187,12 @@ plot1 <- co2 %>%
   ggplot(aes(x = decDate, y = meanCO2)) +
   geom_line() +
   theme_bw() +
-  labs(x = 'Year', y = 'Concentration CO2 (ppm)')
+  labs( y = expression(Concentration~CO['2']~"(ppm)"),
+        x = 'Year', 
+      )
 
-ggplotly(plot1)
+plot1
+#ggplotly(plot1)
 
 ```
 
@@ -199,7 +202,8 @@ ggplotly(plot1)
 #| warning: false
 
 plot2 <- plot1 + 
-  scale_y_continuous(limits = c(0,425))
+  scale_y_continuous(limits = c(0,440)) +
+  labs(y = 'Concentration CO2 (ppm)')
 
 ggplotly(plot2)
 
