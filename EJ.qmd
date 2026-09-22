@@ -1,0 +1,9 @@
+# Unit 2: Environmental Justice {#sec-EJ}
+
+::: {.callout-note appearance="simple"}
+This unit focuses on the identification and quantification of the unequal distribution and access to natural resources within California and the United States.  It also takes a critical look at the Government generated environmental data visualization tools and underlying methods used to characterize Environmental Justice.
+:::
+  
+![Residential sign in Bloomington, CA in 2022  ](https://theievoice.com/wp-content/uploads/2022/12/1200x676_voice_warehouse_story.png){#fig-NoSeVende}
+
+Image from December 2022 [IE Voice news article on Bloomington Business Park approval](https://theievoice.com/san-bernardino-county-board-of-supervisors-unanimously-approves-bloomington-warehouse-project/)

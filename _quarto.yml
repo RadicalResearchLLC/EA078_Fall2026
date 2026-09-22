@@ -18,9 +18,9 @@ book:
       - maps1.qmd   
       - maps2.qmd   
       - chartJunk.qmd   
-#    - part: EJ.qmd  
-#      chapters:
-#      - EJtheory.qmd
+    - part: EJ.qmd  
+      chapters:
+      - EJtheory.qmd
 #      - EJcategories.qmd
 #      - EJdata.qmd
 #      - EJPolygons.qmd

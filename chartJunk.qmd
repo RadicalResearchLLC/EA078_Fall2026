@@ -44,7 +44,9 @@ Tufte would definitely prefer [Figure 4-5](https://radicalresearch.llc/EA078_Fal
 
 This is an aesthetic preference, especially in the modern era where almost all of the visualization we engage with is on a computer/tablet/phone. 
 
+## Data Visualization for ggplot
 
+ADD Grammar of Graphics.
 
 
 
