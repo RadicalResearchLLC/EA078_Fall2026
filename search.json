@@ -352,6 +352,65 @@
     ]
   },
   {
+    "objectID": "EJ.html",
+    "href": "EJ.html",
+    "title": "Unit 2: Environmental Justice",
+    "section": "",
+    "text": "This unit focuses on the identification and quantification of the unequal distribution and access to natural resources within California and the United States. It also takes a critical look at the Government generated environmental data visualization tools and underlying methods used to characterize Environmental Justice.\n\n\n\n\n\n\n\n\n\nFigure 1: Residential sign in Bloomington, CA in 2022\n\n\n\nImage from December 2022 IE Voice news article on Bloomington Business Park approval",
+    "crumbs": [
+      "Home",
+      "Unit 2: Environmental Justice"
+    ]
+  },
+  {
+    "objectID": "EJtheory.html",
+    "href": "EJtheory.html",
+    "title": "6  EJ - Screening Tools",
+    "section": "",
+    "text": "6.1 Definitions",
+    "crumbs": [
+      "Home",
+      "Unit 2: Environmental Justice",
+      "<span class='chapter-number'>6</span>  <span class='chapter-title'>EJ - Screening Tools</span>"
+    ]
+  },
+  {
+    "objectID": "EJtheory.html#definitions",
+    "href": "EJtheory.html#definitions",
+    "title": "6  EJ - Screening Tools",
+    "section": "",
+    "text": "Environmental Protection Agency and California EPA - The fair treatment and meaningful involvement of all people regardless of race, color, culture, national origin, income, and educational levels with respect to the development, implementation, and enforcement of protective environmental laws, regulations, and policies. Fair treatment means that no population, due to policy or economic disempowerment, is forced to bear a disproportionate burden of the negative human health or environmental impacts of pollution or other environmental consequences resulting from industrial, municipal, and commercial operations or the execution of federal, state, local, and tribal programs and policies\nSchlosberg et al., 2002 - - The equitable distribution of environmental risks and benefits\nThe difference between Environmentalism and Environmental Justice is that Environmental Justice brings forward the underlying issues of race, ethnicity, class, wealth, and/or sovereignty in environmental decision-making.",
+    "crumbs": [
+      "Home",
+      "Unit 2: Environmental Justice",
+      "<span class='chapter-number'>6</span>  <span class='chapter-title'>EJ - Screening Tools</span>"
+    ]
+  },
+  {
+    "objectID": "EJtheory.html#concepts-of-environmental-justice-movement",
+    "href": "EJtheory.html#concepts-of-environmental-justice-movement",
+    "title": "6  EJ - Screening Tools",
+    "section": "6.2 Concepts of Environmental Justice Movement",
+    "text": "6.2 Concepts of Environmental Justice Movement\nThe Environmental Justice is a broad and diffuse global movement with many facets. We will not be able to cover most of these concepts in-depth due to time constraints and the visualization focus of this course.\nI did want to do an overview of these topics such that we can compare them to the current tools used in the U.S. and California for measuringing and quantifying Environmental Justice.\n\nEnvironmental Racism - racial discrimination in environmental policy making, enforcement, and decision-making. This applies both within the United States and globally (e.g., hazardous waste export to southern hemisphere).\nEcological debt - the accumulation of obligations through inequitable resource exploitation, pollution, and habitat degradation between the Northern and Southern hemisphere. This has been quantified through climate debt which examines emissions differentials in carbon budgets and adaptation costs which will accrue primarily to poorer countries.\nClimate justice - equitable distribution of benefits and burdens of climate change adaptation and costs.\nFood sovereignty - a food system in which the people who produce, distribute, and consume food also control the mechanisms and policies of food production and distribution; this stands in contrast to a corporate food regime in which corporations and market insitutions control the food system.\n\nSacrifice Zones - a geographic area permanently impaired by heavy environmental alterations or economic disinvestment, often through locally unwanted land use (LULU).\nEnvironmentalism of the poor - social movement that emphasizes social justice issues instead of emphasizing conservation and eco-efficiency; focuses on sustainability and sovereignty.",
+    "crumbs": [
+      "Home",
+      "Unit 2: Environmental Justice",
+      "<span class='chapter-number'>6</span>  <span class='chapter-title'>EJ - Screening Tools</span>"
+    ]
+  },
+  {
+    "objectID": "EJtheory.html#environmental-justice-tools",
+    "href": "EJtheory.html#environmental-justice-tools",
+    "title": "6  EJ - Screening Tools",
+    "section": "6.3 Environmental Justice Tools",
+    "text": "6.3 Environmental Justice Tools\nWe are going to be talking about four EJ tools in this course.\n\nCalEnviroScreen5.0\nEJScreen\nEJI\nClimate and Economic Justice Tool\n\n\n\n\n\n\n\nAll federal tools above have been modified/removed/rehosted since 2024. Politics affects EJ tools and is an actively contested space.\n\n\n\n\n6.3.1 Discussion 1\n\nIs there anything missing from these definitions of Environmental Justice?\nHow does the EPA’s focus on the negative impacts frame Environmental Justice?\nIs a focus on equitable distribution possible in the United States, California, or local municipalities?\nWhy is the current Federal Administration so antagonistic towards Environmental Justice?\n\nFor today, I want to focus on the intersection of the concepts of environmental justice listed above and the metrics of environmental justice in these tools.\n\n\n6.3.2 CalEnviroScreen\n\n\n\n\n\n\nFigure 6.1: CalEnviroScreen Pollution Burden\n\n\n\nFigure 6.1 shows the CalEnviroScreen tool pollution burden index for SoCal. The CalEnviroScreen tool is made up of two categories of data indicators, as documented in the CalEnviroScreen5.0 report.\n\nPollution Burden - negative environmental indicators of either pollution exposure or environmental effects (e.g., ozone, PM, traffic, drinking water contaminants, toxic release facilities)\nPopulation Characteristics - health and socio-economic indicators (e.g., asthma, education, unemployment, low birth weight) - economic, educational, and linguistic indicators are included.\n\nThe Pollution Burden score and Population Characteristics score are multiplied to determine the final CalEnviroScreen Score. CalEnviroScreen5.0 does not have race/ethnicity explicitly as an explanatory variable or part of the base indicator.\nIndividual indicators can be explored as shown in Figure 6.2 visualization of SoCal cardiovascular disease percentiles.\n\n\n\n\n\n\nFigure 6.2: CalEnviroScreen Cardiovascular Disease\n\n\n\n\n\n6.3.3 EPA’s EJScreen\n\n\n\n\n\n\nFigure 6.3: EJSCREEN Ozone Indicator\n\n\n\nFigure 6.3 shows the EPA’s EJScreen index for ozone in SoCal. The U.S. Environmental Protection Agency’s EJScreen tool is also made up of two categories of data indicators, as documented in the 115-page technical report. EPA documentation states that EJScreen is a ’pre-decisional screening tool, and was not meant to be the basis for agency decision-making or determinations regarding the existence or absence of EJ concerns. It should also not be used to identify or label an area as an “EJ community.”\n\nEnvironmental Indicators - negative environmental indicators (i.e., air pollution, traffic, lead paint, proximity to hazardous waste sites, and wastewater discharge)\nDemographic Indicators - an average of the percentage of minority (i.e., non-white non-hispanic) and percentage of low-income households (2x poverty level).\n\nThe individual environmental indicators are combined with a demographic index value to provide individual EJ index values by environmental issue. Thus, there are 12 separate EJ indices provided in EJScreen.\n\n\n6.3.4 CDC and ATSDR Environmental Justice Index\n\n\n\n\n\n\nFigure 6.4: EJI for SoCal\n\n\n\nFigure 6.4 shows the Environmental Justice Index quartiles for SoCal. The Centers for Disease Control CDC Agency for Toxic Substances and Disease Registry ATSDR is a public health agency that has created its own indicator, which is documented in a 94 page technical report\nThe EJI uses three categories of indicators.\n\nSocial Vulnerability - Subgroups in this category include racial/ethnic minority status, socioeconomic categories, household demographics, and housing type\nEnvironmental Burden - Subgroups in this category include air pollution, hazardous and toxic sites, built environment, transportation corridors, and water pollution\nHealth Vulnerablity - This category includes five pre-existing chronic diseases, including asthma, cancer, blood pressure, diabetes, and mental health.\n\nThe three indicator categories are each weighted equally and averaged to generate a final single indicator value for the EJI. Each individual category is also available via mouseover or click on specific map locations.\n\n\n6.3.5 Climate and Economic Justice Screening Tool\n\n\n\n\n\n\nFigure 6.5: Climate and Environmental Justice Screening Tool\n\n\n\nFigure 6.5 shows the CEJST base visualization for environmental justice. The CEJST is from the President’s Council on Environmental Quality. The tool is intended to help identify disadvantaged communities that will benefit from programs included in the Justice40 initiative, which seeks to deliver 40% of overall benefits in climate, clean energy, and related areas to disadvantaged communities.\nCEJST uses a two-fold methodology somewhat similar to that followed in EJScreen. The tool uses multiple datasets as indicators of burden. A community is highlighted as disadvantaged on the CEJST map if it is at or above the…\n\nBurden threshold (climate change, energy, legacy pollution, health, housing, transportation, water, and workforce development)\nEconomic threshold (below 35th percentile income usually, low educational attainment for workforce development)\nIn a census tract completely surrounded by disadvantaged communities and at or above the low income median percentile.\n\n\n\n6.3.6 Discussion 2\n\nVisualization - What are your first thoughts about the visualization choices made by creators of these EJ tools? What do you like and dislike; what would you change?\nIndicators - Compare the sets of indicators in these tools. Are they measuring Environmental Justice? What EJ concepts are not covered by these indicators?\nGroupthink - Gather round in groups of 4 and pick a data layer to explore and compare in each of these tools. Once your group has decided, that layer cannot be picked by another group. Come up with a brief group story about your EJ data layer. In your story, tell the class which tool is best and why for illustrating your story. Similarly, tell the class which tool is worst and why for illustrating your story.",
+    "crumbs": [
+      "Home",
+      "Unit 2: Environmental Justice",
+      "<span class='chapter-number'>6</span>  <span class='chapter-title'>EJ - Screening Tools</span>"
+    ]
+  },
+  {
     "objectID": "syllabus.html",
     "href": "syllabus.html",
     "title": "Appendix A — Course Syllabus",
