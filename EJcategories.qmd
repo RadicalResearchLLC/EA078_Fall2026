@@ -1,0 +1,166 @@
+# EJ - Praxis and Visualization {#sec-EJcategories}
+
+::: {.callout-note appearance="simple"}
+Today we will focus on a bit of theory, a story about warehouses, and then engage in the practice of data driven visualization.
+:::
+
+The EPA and California EPA both agree that this is the definition of Environmental Justice (**EJ**).
+
+::: {.callout-note appearance="important"}
+The fair treatment and meaningful involvement of all people regardless of race, color, culture, national origin, income, and educational levels with respect to the development, implementation, and enforcement of protective environmental laws, regulations, and policies. _Fair treatment_ means that no population, due to policy or economic disempowerment, is forced to bear a disproportionate burden of the negative human health or environmental impacts of pollution or other environmental consequences resulting from industrial, municipal, and commercial operations or the execution of federal, state, local, and tribal programs and policies 
+:::
+
+## Data Categories in EJ Tools  
+
+As discussed, in the previous lesson, there are a few broad categories of data that are currently used in Environmental Justice (**EJ**) tools.  Let's recap them here.
+
+1. **Pollution Burden** - negative environmental indicators of either pollution exposure, built environment, or environmental effects (e.g., ozone, PM, traffic, drinking water contaminants, toxic release facilities)
+2. **Socioeconomic indicators** - demographic and economic indicators of population
+3. **Health vulnerability** - an indicator of population level health-effect data such as asthma, cancer, diabetes, cardiovascular, and low birth-weight
+
+As we noted in the last class, these visualizations are more about identifying or screening for locations experiencing environmental injustice than about achieving or visualizing **Environmental Justice**.
+
+### Discussion 1
+
+1. What data is needed to understand the _fair treatment_ principle of Environmental Justice?
+2. What data is needed to understand the _meaningful involvement_ principle of Environmental Justice?
+3. How does data availability limit our understanding and ability to visualize Environmental Justice?
+
+## Not Data - Not Available 
+
+Meaningful involvement is a very nebulous and hard-to-measure concept. Within the context of EJ, it indicates public participation with stakeholders and the influence to shape decision-making. 
+
+The EPA has a resource on [public participation](https://www.epa.gov/international-cooperation/public-participation-guide-introduction-guide) in decision-making.  
+
+:::{.callout-note appearance="simple"}
+Public participation is a process, not a single event. It consists of a series of activities and actions by a sponsor agency over the full lifespan of a project to both inform the public and obtain input from them. Public participation affords stakeholders (those that have an interest or stake in an issue, such as individuals, interest groups, communities) the opportunity to influence decisions that affect their lives.
+:::
+
+A large part of that framework is based on a schematic as shown in @fig-schematic of the different possible levels of involvement by stakeholders in decision-making. The schematic is from the [International Association of Public Participation](https://www.iap2.org).
+
+![Public Participation Spectrum](https://iap2canada.ca/resources/Pictures/spectrum%20ENG.png){#fig-schematic}
+
+Quantifying _meaningful involvement_ in a public participation process of decision-making is complicated and difficult to track. It is also a subjective judgement, although one could have systematic criteria for evaluating it. Moreover, the issue is probably better described as one in which the _involvement_ levels are unequal between different stakeholder groups. In other words, developers and industry stakeholders are provided greater opportunity to shape policy and decision-making compared to residential and environmental stakeholders. 
+
+### Discussion 2.
+
+1. How does a lack of data shape our ability to communicate and visualize an issue?
+2. How could one collect information to visualize _meaningful involvement_?  
+
+## Case Study - SoCal Warehouses in the Inland Empire
+
+I have been doing work with the [Redford Conservancy](https://www.pitzer.edu/redfordconservancy/) on warehouses in the [Inland Empire](https://en.wikipedia.org/wiki/Inland_Empire).  As part of that work, I have developed a few mapping tools to visualize warehouse information.  
+
+The primary tool is called [WarehouseCITY](https://radicalresearch.shinyapps.io/WarehouseCITY/).  WarehouseCITY is intended to provide a means for the public to easily access the impact of existing warehouses on their community. The code repository is located on [github](https://github.com/RadicalResearchLLC/WarehouseMap).  
+
+A secondary tool provides a [visualization](https://radicalresearch.shinyapps.io/WarehouseAssemblyBill/) of the schools within 300 feet or 1000 feet of warehouse boundaries in the Inland Empire in 2024. This was created for a comparison between two competing California state assembly bills proposing different warehouse setbacks from schools.  AB 1000 proposed a 1,000 foot setback from 100,000 sq. ft. warehouses to schools, residential communities, and similar sensitive receptors.  AB 1748 required a 300 foot setback from dock doors of 400,000 sq. ft. warehouses.  
+
+### Is Visualization Effective in Social Praxis?
+
+Sometimes.
+
+Yes, it works to get media attention and makes very convincing storytelling to those who already agree with you. It can change or engage people who are already on your side.  It can surprise and influence people who are in the middle.  
+
+No, it does not seem to be very effective at engaging decision-makers directly. My experience has been that they are more interested in people and stories. In private meetings, they ooh and aah at the visualization but are more interested in strategy and coalition building - on the ground organization and political influence.  
+
+### Warehouse Visualization is Easy 
+
+#### Load libraries
+
+```{r}
+#| echo: true
+#| warning: false
+
+library(sf)
+library(tidyverse)
+library(leaflet)
+
+```
+
+#### Acquire data
+
+We will also pull warehouse data for the first time!  New data incoming!
+
+Also note that I made this dataset smaller by using the `filter()` function to only include data from Riverside County; this removes about 7,500 warehouses from LA and San Bernardino counties.  
+
+```{r}
+#| echo: true
+#| warning: false
+
+WH.url <- 'https://raw.githubusercontent.com/RadicalResearchLLC/WarehouseMap/main/WarehouseCITY/geoJSON/comboFinal.geojson'
+warehouses <- st_read(WH.url) |>  
+  filter(county == 'Riverside County') |>  
+  st_transform("+proj=longlat +ellps=WGS84 +datum=WGS84")
+
+```
+
+Check to see what the `warehouses` dataset looks like.
+
+```{r}
+#| echo: true
+#| warning: false
+
+head(warehouses)
+```
+
+#### Basic Visualization
+
+This is geospatial data, so we should put it in an interactive `leaflet` map to do an initial visualization. @fig-basicWH shows a very basic polygon leaflet map.
+
+```{r}
+#| label: fig-basicWH
+#| fig-cap: Basic leaflet warehouse map
+#| echo: true
+
+leaflet() |> 
+  addTiles() |> 
+  addPolygons(data = warehouses)
+```
+
+#### Improve the Visualization
+
+The `setView()` function allows us to set the zoom level and the centerpoint of the map using the arguments `lng`, `lat`, and `zoom`.  
+
+Within the `addPolygons()` function, I set the `color` to brown and the `weight` of the line to 1.  
+
+@fig-colorWH shows the result for my neighborhood in Riverside.  
+
+```{r}
+#| label: fig-colorWH
+#| fig-cap: Leaflet warehouse map making warehouses brown
+#| echo: true
+
+leaflet() |> 
+  addTiles() |>  
+  addPolygons(data = warehouses,
+              color = 'black',
+              weight = 1) |> 
+  setView(lng = -117.24, lat = 33.875, zoom = 12) 
+```
+
+Let's add two more helpful things to orient viewers at a glance.  
+
+1. Let's change the underlying tile to satellite/aerial imagery using `addProviderTiles()`
+2. Let's add a mini-map to orient the viewer to where this is using `addMiniMap()`.
+
+@fig-improvedWHmap shows the resulting map - note I added a palette to distinguish between existing warehouses (orange) and planned and approved warehouses (red) because brown has low salience in satellite imagery of SoCal.  
+
+```{r}
+#| label: fig-improvedWHmap
+#| fig-cap: Leaflet warehouse map near March JPA
+#| echo: true
+
+palWHtype <- colorFactor(palette = c( 'darkred', 'darkorange', 'black'),
+                         domain = warehouses$category)
+
+leaflet()  |>  
+  addProviderTiles(provider = providers$Esri.WorldImagery) |> # This shows satellite imagery
+  addPolygons(data = warehouses,
+              color = ~palWHtype(category), #this creates the color categories
+              weight = 1) |> 
+  setView(lng = -117.24, lat = 33.875, zoom = 12) |> #this provides the location and zoom level
+  addMiniMap(position = 'bottomleft') #this adds a minimap
+```
+
+
+
