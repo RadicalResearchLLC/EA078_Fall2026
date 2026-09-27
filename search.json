@@ -399,6 +399,54 @@
     ]
   },
   {
+    "objectID": "EJcategories.html",
+    "href": "EJcategories.html",
+    "title": "7  EJ - Praxis and Visualization",
+    "section": "",
+    "text": "7.1 Data Categories in EJ Tools\nThe EPA and California EPA both agree that this is the definition of Environmental Justice (EJ).\nAs discussed, in the previous lesson, there are a few broad categories of data that are currently used in Environmental Justice (EJ) tools. Let’s recap them here.\nAs we noted in the last class, these visualizations are more about identifying or screening for locations experiencing environmental injustice than about achieving or visualizing Environmental Justice.",
+    "crumbs": [
+      "Home",
+      "Unit 2: Environmental Justice",
+      "<span class='chapter-number'>7</span>  <span class='chapter-title'>EJ - Praxis and Visualization</span>"
+    ]
+  },
+  {
+    "objectID": "EJcategories.html#data-categories-in-ej-tools",
+    "href": "EJcategories.html#data-categories-in-ej-tools",
+    "title": "7  EJ - Praxis and Visualization",
+    "section": "",
+    "text": "Pollution Burden - negative environmental indicators of either pollution exposure, built environment, or environmental effects (e.g., ozone, PM, traffic, drinking water contaminants, toxic release facilities)\n\nSocioeconomic indicators - demographic and economic indicators of population\n\nHealth vulnerability - an indicator of population level health-effect data such as asthma, cancer, diabetes, cardiovascular, and low birth-weight\n\n\n\n7.1.1 Discussion 1\n\nWhat data is needed to understand the fair treatment principle of Environmental Justice?\nWhat data is needed to understand the meaningful involvement principle of Environmental Justice?\nHow does data availability limit our understanding and ability to visualize Environmental Justice?",
+    "crumbs": [
+      "Home",
+      "Unit 2: Environmental Justice",
+      "<span class='chapter-number'>7</span>  <span class='chapter-title'>EJ - Praxis and Visualization</span>"
+    ]
+  },
+  {
+    "objectID": "EJcategories.html#not-data---not-available",
+    "href": "EJcategories.html#not-data---not-available",
+    "title": "7  EJ - Praxis and Visualization",
+    "section": "\n7.2 Not Data - Not Available",
+    "text": "7.2 Not Data - Not Available\nMeaningful involvement is a very nebulous and hard-to-measure concept. Within the context of EJ, it indicates public participation with stakeholders and the influence to shape decision-making.\nThe EPA has a resource on public participation in decision-making.\n\n\n\n\n\n\nPublic participation is a process, not a single event. It consists of a series of activities and actions by a sponsor agency over the full lifespan of a project to both inform the public and obtain input from them. Public participation affords stakeholders (those that have an interest or stake in an issue, such as individuals, interest groups, communities) the opportunity to influence decisions that affect their lives.\n\n\n\nA large part of that framework is based on a schematic as shown in Figure 7.1 of the different possible levels of involvement by stakeholders in decision-making. The schematic is from the International Association of Public Participation.\n\n\n\n\n\nFigure 7.1: Public Participation Spectrum\n\n\nQuantifying meaningful involvement in a public participation process of decision-making is complicated and difficult to track. It is also a subjective judgement, although one could have systematic criteria for evaluating it. Moreover, the issue is probably better described as one in which the involvement levels are unequal between different stakeholder groups. In other words, developers and industry stakeholders are provided greater opportunity to shape policy and decision-making compared to residential and environmental stakeholders.\n\n7.2.1 Discussion 2.\n\nHow does a lack of data shape our ability to communicate and visualize an issue?\nHow could one collect information to visualize meaningful involvement?",
+    "crumbs": [
+      "Home",
+      "Unit 2: Environmental Justice",
+      "<span class='chapter-number'>7</span>  <span class='chapter-title'>EJ - Praxis and Visualization</span>"
+    ]
+  },
+  {
+    "objectID": "EJcategories.html#case-study---socal-warehouses-in-the-inland-empire",
+    "href": "EJcategories.html#case-study---socal-warehouses-in-the-inland-empire",
+    "title": "7  EJ - Praxis and Visualization",
+    "section": "\n7.3 Case Study - SoCal Warehouses in the Inland Empire",
+    "text": "7.3 Case Study - SoCal Warehouses in the Inland Empire\nI have been doing work with the Redford Conservancy on warehouses in the Inland Empire. As part of that work, I have developed a few mapping tools to visualize warehouse information.\nThe primary tool is called WarehouseCITY. WarehouseCITY is intended to provide a means for the public to easily access the impact of existing warehouses on their community. The code repository is located on github.\nA secondary tool provides a visualization of the schools within 300 feet or 1000 feet of warehouse boundaries in the Inland Empire in 2024. This was created for a comparison between two competing California state assembly bills proposing different warehouse setbacks from schools. AB 1000 proposed a 1,000 foot setback from 100,000 sq. ft. warehouses to schools, residential communities, and similar sensitive receptors. AB 1748 required a 300 foot setback from dock doors of 400,000 sq. ft. warehouses.\n\n7.3.1 Is Visualization Effective in Social Praxis?\nSometimes.\nYes, it works to get media attention and makes very convincing storytelling to those who already agree with you. It can change or engage people who are already on your side. It can surprise and influence people who are in the middle.\nNo, it does not seem to be very effective at engaging decision-makers directly. My experience has been that they are more interested in people and stories. In private meetings, they ooh and aah at the visualization but are more interested in strategy and coalition building - on the ground organization and political influence.\n\n7.3.2 Warehouse Visualization is Easy\n\n7.3.2.1 Load libraries\n\nlibrary(sf)\nlibrary(tidyverse)\nlibrary(leaflet)\n\n\n7.3.2.2 Acquire data\nWe will also pull warehouse data for the first time! New data incoming!\nAlso note that I made this dataset smaller by using the filter() function to only include data from Riverside County; this removes about 7,500 warehouses from LA and San Bernardino counties.\n\nWH.url &lt;- 'https://raw.githubusercontent.com/RadicalResearchLLC/WarehouseMap/main/WarehouseCITY/geoJSON/comboFinal.geojson'\nwarehouses &lt;- st_read(WH.url) |&gt;  \n  filter(county == 'Riverside County') |&gt;  \n  st_transform(\"+proj=longlat +ellps=WGS84 +datum=WGS84\")\n\nReading layer `comboFinal' from data source \n  `https://raw.githubusercontent.com/RadicalResearchLLC/WarehouseMap/main/WarehouseCITY/geoJSON/comboFinal.geojson' \n  using driver `GeoJSON'\nSimple feature collection with 9132 features and 8 fields\nGeometry type: MULTIPOLYGON\nDimension:     XY\nBounding box:  xmin: -118.8037 ymin: 33.44233 xmax: -114.4085 ymax: 35.35825\nGeodetic CRS:  WGS 84\n\n\nCheck to see what the warehouses dataset looks like.\n\nhead(warehouses)\n\nSimple feature collection with 6 features and 8 fields\nGeometry type: MULTIPOLYGON\nDimension:     XY\nBounding box:  xmin: -117.6015 ymin: 33.8773 xmax: -117.5314 ymax: 33.97265\nGeodetic CRS:  +proj=longlat +ellps=WGS84 +datum=WGS84\n        apn shape_area category year_built                 class\n1 115050036     343900 Existing       2000 warehouse/dry storage\n2 115060057     206900 Existing       1980 warehouse/dry storage\n3 115670012      71800 Existing       1999 warehouse/dry storage\n4 144010064      93200 Existing       2018 warehouse/dry storage\n5 144010070     206100 Existing       2018 warehouse/dry storage\n6 144010076     190000 Existing       1980 warehouse/dry storage\n            county unknown place_name                       geometry\n1 Riverside County   FALSE     Corona MULTIPOLYGON (((-117.5428 3...\n2 Riverside County    TRUE     Corona MULTIPOLYGON (((-117.5533 3...\n3 Riverside County   FALSE     Corona MULTIPOLYGON (((-117.5314 3...\n4 Riverside County   FALSE   Eastvale MULTIPOLYGON (((-117.5946 3...\n5 Riverside County   FALSE   Eastvale MULTIPOLYGON (((-117.6003 3...\n6 Riverside County    TRUE   Eastvale MULTIPOLYGON (((-117.5962 3...\n\n\n\n7.3.2.3 Basic Visualization\nThis is geospatial data, so we should put it in an interactive leaflet map to do an initial visualization. Figure 7.2 shows a very basic polygon leaflet map.\n\nleaflet() |&gt; \n  addTiles() |&gt; \n  addPolygons(data = warehouses)\n\n\n\n\n\n\nFigure 7.2: Basic leaflet warehouse map\n\n\n\n\n7.3.2.4 Improve the Visualization\nThe setView() function allows us to set the zoom level and the centerpoint of the map using the arguments lng, lat, and zoom.\nWithin the addPolygons() function, I set the color to brown and the weight of the line to 1.\nFigure 7.3 shows the result for my neighborhood in Riverside.\n\nleaflet() |&gt; \n  addTiles() |&gt;  \n  addPolygons(data = warehouses,\n              color = 'black',\n              weight = 1) |&gt; \n  setView(lng = -117.24, lat = 33.875, zoom = 12) \n\n\n\n\n\n\nFigure 7.3: Leaflet warehouse map making warehouses brown\n\n\n\nLet’s add two more helpful things to orient viewers at a glance.\n\nLet’s change the underlying tile to satellite/aerial imagery using addProviderTiles()\n\nLet’s add a mini-map to orient the viewer to where this is using addMiniMap().\n\nFigure 7.4 shows the resulting map - note I added a palette to distinguish between existing warehouses (orange) and planned and approved warehouses (red) because brown has low salience in satellite imagery of SoCal.\n\npalWHtype &lt;- colorFactor(palette = c( 'darkred', 'darkorange', 'black'),\n                         domain = warehouses$category)\n\nleaflet()  |&gt;  \n  addProviderTiles(provider = providers$Esri.WorldImagery) |&gt; # This shows satellite imagery\n  addPolygons(data = warehouses,\n              color = ~palWHtype(category), #this creates the color categories\n              weight = 1) |&gt; \n  setView(lng = -117.24, lat = 33.875, zoom = 12) |&gt; #this provides the location and zoom level\n  addMiniMap(position = 'bottomleft') #this adds a minimap\n\n\n\n\n\n\nFigure 7.4: Leaflet warehouse map near March JPA",
+    "crumbs": [
+      "Home",
+      "Unit 2: Environmental Justice",
+      "<span class='chapter-number'>7</span>  <span class='chapter-title'>EJ - Praxis and Visualization</span>"
+    ]
+  },
+  {
     "objectID": "syllabus.html",
     "href": "syllabus.html",
     "title": "Appendix A — Course Syllabus",
