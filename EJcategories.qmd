@@ -119,14 +119,26 @@ leaflet() |>
 
 #### Improve the Visualization
 
-The `setView()` function allows us to set the zoom level and the centerpoint of the map using the arguments `lng`, `lat`, and `zoom`.  
-
-Within the `addPolygons()` function, I set the `color` to brown and the `weight` of the line to 1.  
+Within the `addPolygons()` function, I set the `color` to black and the `weight` of the line to 1.  
 
 @fig-colorWH shows the result for my neighborhood in Riverside.  
 
 ```{r}
 #| label: fig-colorWH
+#| fig-cap: Leaflet warehouse map making warehouses brown
+#| echo: true
+
+leaflet() |> 
+  addTiles() |>  
+  addPolygons(data = warehouses,
+              color = 'black',
+              weight = 1) 
+```
+
+The `setView()` function allows us to set the zoom level and the centerpoint of the map using the arguments `lng`, `lat`, and `zoom`.  
+
+```{r}
+#| label: fig-viewWH
 #| fig-cap: Leaflet warehouse map making warehouses brown
 #| echo: true
 
@@ -140,10 +152,10 @@ leaflet() |>
 
 Let's add two more helpful things to orient viewers at a glance.  
 
-1. Let's change the underlying tile to satellite/aerial imagery using `addProviderTiles()`
-2. Let's add a mini-map to orient the viewer to where this is using `addMiniMap()`.
+1. Let's add a mini-map to orient the viewer to where this is using `addMiniMap()`.
+2. Let's add a color palette and legend to distinguish the types of warehouse projects.
 
-@fig-improvedWHmap shows the resulting map - note I added a palette to distinguish between existing warehouses (orange) and planned and approved warehouses (red) because brown has low salience in satellite imagery of SoCal.  
+@fig-improvedWHmap shows the resulting map - note I added a palette to distinguish between existing warehouses (orange) and planned and approved warehouses (red) because  has low salience in satellite imagery of SoCal.  
 
 ```{r}
 #| label: fig-improvedWHmap
@@ -154,13 +166,40 @@ palWHtype <- colorFactor(palette = c( 'darkred', 'darkorange', 'black'),
                          domain = warehouses$category)
 
 leaflet()  |>  
-  addProviderTiles(provider = providers$Esri.WorldImagery) |> # This shows satellite imagery
+ addTiles() |> 
   addPolygons(data = warehouses,
               color = ~palWHtype(category), #this creates the color categories
               weight = 1) |> 
+  addLegend(data = warehouses,
+            pal = palWHtype,
+            values = ~category) |> 
   setView(lng = -117.24, lat = 33.875, zoom = 12) |> #this provides the location and zoom level
   addMiniMap(position = 'bottomleft') #this adds a minimap
 ```
 
 
+Lastly, we can change the tiles to show different types of underlying tile maps for our interactive maps as shown in @fig-tileMap.
+
+The `addProviderTiles()` function is what makes that possible and replaces the default `addTiles()`.
+
+```{r}
+#| label: fig-tileMap
+#| fig-cap: Leaflet warehouse map near March JPA
+#| echo: true
+
+palWHtype <- colorFactor(palette = c( 'darkred', 'darkorange', 'black'),
+                         domain = warehouses$category)
+
+leaflet()  |>  
+  addProviderTiles(provider = providers$Esri.WorldImagery) |> # This shows satellite imagery
+  addPolygons(data = warehouses,
+              color = ~palWHtype(category), #this creates the color categories
+              weight = 1,
+              fillOpacity = 0.6) |> #add the fillOpacity argument to increase salience 
+  addLegend(data = warehouses,
+            pal = palWHtype,
+            values = ~category) |> 
+  setView(lng = -117.24, lat = 33.875, zoom = 12) |> #this provides the location and zoom level
+  addMiniMap(position = 'bottomleft') #this adds a minimap
+```
 
