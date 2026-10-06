@@ -68,7 +68,9 @@ head(CA_places)
 #| echo: true
 
 MV <- CA_places |> 
-  filter(NAME == 'Mead Valley') # keep only Mead Valley.  
+  filter(NAME == 'Mead Valley') |> 
+  st_transform(crs = 4326) 
+# keep only Mead Valley.  
 #if you want multiple jurisdictions, replace == with %in% and use c() to create a list to select
 
 
