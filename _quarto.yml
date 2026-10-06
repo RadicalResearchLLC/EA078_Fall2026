@@ -23,7 +23,7 @@ book:
       - EJtheory.qmd
       - EJcategories.qmd
       - EJdata.qmd
-#      - EJPolygons.qmd
+      - EJPolygons.qmd
 #      - assignment2.qmd
 #    - part: data.qmd  
 #      chapters:
