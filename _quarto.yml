@@ -24,10 +24,9 @@ book:
       - EJcategories.qmd
       - EJdata.qmd
       - EJPolygons.qmd
-#      - assignment2.qmd
-#    - part: data.qmd  
-#      chapters:
-#      - import2.qmd  
+    - part: data.qmd  
+      chapters:
+      - import2.qmd  
 #      - export.qmd  
 #      - munging.qmd  
 #      - import3.qmd  
