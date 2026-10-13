@@ -1,0 +1,246 @@
+# Importing Data - Part 2 {#sec-import3}
+  
+::: {.callout-note appearance="simple"}
+Today we will focus on the practice of importing data - with examples for class projects.
+:::
+    
+## Load libraries and install new package
+
+Load `tidyverse`, `sf`, `leaflet`, and `htmltools`.  
+
+```{r}
+#| label: load libraries
+#| echo: true
+
+library(tidyverse)
+library(sf)
+library(leaflet)
+
+```
+    
+I will also demonstrate the use of the `tidycensus` package. Install and load the `tidycensus` package.  
+
+```{r}
+#| label: install tidycensus
+#| echo: true
+#| eval: false
+
+install.packages('tidycensus')
+
+```
+
+```{r}
+#| label: load tidycensus
+#| echo: true
+
+library(tidycensus)
+
+```
+
+### Extra step - register for API key from the Census
+
+Register at this url [https://api.census.gov/data/key_signup.html](https://api.census.gov/data/key_signup.html).
+
+Organization is probably Pitzer College.
+
+Check your email for a very long api key. Copy that key.
+
+Run the following line of code to activate your key for the session. The key is used in every request to access data from the census API (application programming interface).
+
+```{r}
+#| label: census api key
+#| echo: true
+#| eval: false
+#| message: false
+
+
+# Replace <YOUR KEY HERE> with the key from the census data api service
+census_api_key('<YOUR KEY HERE>', install = TRUE)
+
+```
+
+```{r}
+#| label: census api key for real
+#| echo: false
+#| eval: false
+
+#census_api_key('HIDDEN KEY', install = TRUE)
+
+```
+
+## Import Geospatial Census data
+
+`tidycensus` allows one to pull specific geospatial census datasets quickly into R for use in mapping and visualization applications.  This should be pretty good for the individual and group projects.
+
+First, we need to alter a setting in the options to allow R to directly import geospatial files from the census API.  
+
+```{r}
+#| label: tigris
+#| echo: true
+
+options(tigris_use_cache = TRUE)
+```
+
+### Example 1 - Los Angeles census tracts
+
+`tidycensus` accepts state names (e.g. "Wisconsin"), state postal codes (e.g. "WI"), and state FIPS codes (e.g. "55"), so a user can choose what they are most comfortable with.
+
+First, let's pull a census tract dataset to show how it works and how it quickly gets us spatial information. I will start with an example from Los Angeles County. We are pulling American Community Survey data using `get_acs()`.  The arguments are `state`, `county`, `geography` - which we choose as census tract, `variable` - which we choose as _B19013_001_ which is median income, `geometry`, and `year`.  
+
+```{r}
+#| label: get ACS data for LA County
+#| echo: true
+#| message: false
+
+LA <- get_acs(
+  state = "CA",
+  county = "Los Angeles",
+  geography = "tract",
+  variables = "B19013_001",
+  geometry = TRUE,
+  year = 2024
+)
+
+```
+
+Now let's map it using leaflet. I want to show the median income as a filled color and I'll choose the `viridis` palette.  Remember to define the color palette first. @fig-income shows the result.
+
+```{r}
+#| label: fig-income
+#| echo: true
+#| fig-cap: Median household income for 2024 for Los Angeles County
+
+palIncome <- colorNumeric(palette = 'Greens', domain = LA$estimate)
+
+LA |>  
+  filter(!is.na(estimate)) |>  #remove NA census tracts
+  st_transform(crs = 4326)  |> #crs to WGS84
+  leaflet()  |>  
+  addTiles() |>  
+  addProviderTiles(provider = providers$Stadia.AlidadeSmooth)  |>  
+  addPolygons(color = ~palIncome(estimate),
+              fillOpacity = 0.7,
+              weight = 0.5,
+              label = ~str_c('$',estimate)) |>  
+  addLegend(pal = palIncome,
+            title = 'Median Income',
+            values = ~estimate)
+
+```
+
+The variables that are available from the U.S. census can be perused using the following code bits.  See the `tidycensus` page for more details. There are 25,000+ variables to choose from and it goes a bit too deep to go into those here.   
+
+```{r}
+#| label: explore census variables
+#| echo: true
+
+v20 <- load_variables(2020, "acs5", cache = TRUE)
+
+head(v20)
+#View(v20)
+```
+
+
+### Example 2 - Los Angeles County - Racial variables
+
+Knowing income is nice, but a lot of the Environmental (in)Justice section was also focused on racial and ethnic variables.  Here's an example for Jefferson County, Texas to pull decennial census data on racial composition at the county census tract level. 
+
+```{r}
+#| label: pull racial variables
+#| echo: TRUE
+#| message: FALSE
+
+# These are the list of racial variables from the decennial census
+racevars <- c(White = "P2_005N", 
+              Black = "P2_006N", 
+              Asian = "P2_008N", 
+              Hispanic = "P2_002N")
+
+LACo <- get_decennial(
+  geography = "tract",
+  variables = racevars,
+  state = "CA",
+  county = "Los Angeles County",
+  geometry = TRUE,
+  summary_var = "P2_001N",
+  year = 2020
+) 
+
+head(LACo)
+```
+  
+Data looks good.  @fig-LACoRace shows a facet wrap display of the racial data. This is a very modest remix of the example from the `tidycensus` spatial data example for [Harris County](https://walker-data.com/tidycensus/articles/spatial-data.html).  
+
+```{r}
+#| label: fig-SBDCoRace
+#| echo: true
+#| fig-cap: Racial demographic information for San Bernardino County, CA from the decennial census for 2020.
+
+LACo %>%
+  #Create a percent variable for the four racial categories
+  mutate(percent = 100 * (value / summary_value)) %>%
+  #Make a ggplot map
+  ggplot(aes(fill = percent)) +
+  facet_wrap(~variable) +
+  geom_sf(color = NA) +
+  theme_void() + 
+  scale_fill_viridis_c() + 
+  labs(fill = "% of population\n(2020 Census)")
+
+```
+
+This is a good start, especially if one overlaid the location of major petrochemical facilities from the TRI dataset on it. 
+
+### Example from Cancer Alley
+
+[TorHoerman Law](https://www.torhoermanlaw.com/cancer-alley-causes-and-effects-of-chemical-corridor-in-louisiana/) identifies three parishes in Louisiana as part of cancer alley - St. Charles, St. James, and St. John the Baptist.  
+
+Can we pull and display three parishes (i.e., Louisiana county equivalents) simultaneously?
+
+```{r}
+#| label: cancer alley pull
+#| echo: true
+#| message: FALSE
+
+#Note, we use the same racial demographic variables in previous example
+
+#Combine the three parishes into a single list for pulling
+parishes <- c('St. John the Baptist',
+              'St. James',
+              'St. Charles')
+
+CancerAlley <- get_decennial(
+  geography = "tract",
+  variables = racevars,
+  #change the state
+  state = "LA",
+  #change the county 
+  county = parishes,
+  geometry = TRUE,
+  summary_var = "P2_001N",
+  year = 2020
+) 
+
+head(CancerAlley)
+```
+
+The data looks promising.  Opening the new **CancerAlley** table shows that there are census tracts from each of the parishes listed. @fig-Alley shows the same style of display for Cancer Alley as display for Jefferson County, TX. Note that Ascenscion and Iberville Parishes may warrant inclusion as well.   
+
+```{r}
+#| label: fig-Alley
+#| echo: true
+#| fig-cap: Racial demographic information for Cancer Alley from the decennial census for 2020.
+
+CancerAlley %>%
+  #Create a percent variable for the four racial categories
+  mutate(percent = 100 * (value / summary_value)) %>%
+  ggplot(aes(fill = percent)) +
+  facet_wrap(~variable) +
+  #included tract lines for clarity
+  geom_sf(color = 'black') +
+  theme_void() + 
+  scale_fill_viridis_c() + 
+  labs(fill = "% of population\n(2020 Census)")
+
+```
+

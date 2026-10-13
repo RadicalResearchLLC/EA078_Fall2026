@@ -16,8 +16,8 @@ Acquiring and importing data is the most complicated part of this course and dat
 #| label: load tidyverse, sf, leaflet
 #| echo: true
 
-library(tidyverse) ## 
-library(sf)
+library(tidyverse, quiet = T)
+library(sf, quiet = T)
 library(leaflet)
 
 ```
@@ -90,14 +90,38 @@ Shapefiles are the [**esri**](https://www.esri.com/en-us/home) propietary geospa
 
 The CalEnviroScreen data are in the shapefile format, which is a bunch of individual files organized in a folder directory. In the **calenviroscreen40shpf2021shp** directory, there are 8 individual files with 8 different file extensions. We can ignore that and just point `read_sf()` at the directory and it will do the rest. The `dsn =` argument stands for *data source name* which can be a directory, file, or a database.
 
+#### Import data using the `file.choose()` function
+
+`file.choose()` will open a browser allowing us to select the file to open.
+
+Navigate down the subdirectories to **CES5_final_shapefile.shop** to open the file.  
+
+![NavigateCES5_final_shapefile.shp](images/selectThis.png){#fig-Directory}
+
 ```{r}
 #| label: import CalEnviroScreen5.0 dataset
 #| echo: true
+#| eval: false
 
-wd <- getwd()
-subdirectory <- 'calenviroscreen50results_f_070126.shp'
-CalEJ <- sf::st_read(dsn = subdirectory) |> 
-  sf::st_transform(crs = 4326)
+#My shapefile is in C:\Dev\EA078_Fall2026\calenviroscreen50results_f_070126.shp\calenviroscreen50results_F_070126.shp
+CalEJ <- st_read(dsn = file.choose()) 
+
+```
+
+#### Direct path method 
+
+`str_c()` is a stringr function that concatenates files.  This bit of code hopefully directly identifies the file path for the shapefile directory using your **working directory**.  
+
+```{r}
+#| echo: true
+#| eval: true
+
+#Alternate direct path method
+
+dir_file <- str_c(wd, '/calenviroscreen50results_f_070126.shp/calenviroscreen50results_F_070126.shp') 
+# check capitalization on your machine's path - mine has one lowercase and one uppercase F
+print(dir_file)
+CalEJ <- sf::st_read(dsn = dir_file)
 
 ```
 
@@ -114,8 +138,9 @@ The whole California map is too big, so I am just going to show the southernmost
 #| echo: true
 
 CalEJ2 <- CalEJ  |>  
-  filter(county %in% c('Imperial', 'Riverside', 'San Diego', 'Orange')) |> 
-  filter(pestP >=0)
+  filter(county %in% c('Imperial', 'Riverside', 'San Diego', 'Orange')) |> # pick 4 counties
+  filter(pestP >=0) |> # tidy data to get rid of negatives
+  st_transform(crs = 4326) # coordinate reference system to fit leaflet
 
 ```
 

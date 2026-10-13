@@ -1,0 +1,203 @@
+# Data Science 101 {#sec-munging}
+
+::: {.callout-note appearance="simple"}
+Today we focus on the practice of manipulating data in R
+:::
+
+## Introduction
+
+> 'Tidy datasets are all alike, but every messy dataset is messy in its own way.'\
+> --- Hadley Wickham
+
+![Hadley Wickham - Creator of the Tidyverse](https://pbs.twimg.com/profile_images/905186381995147264/7zKAG5sY_400x400.jpg){width="200"}
+
+Mr. Wickham is of course quoting Tolstoy, but his observation is poignant and correct. Much of the work in data visualization is finagling one's dataset.
+
+Today, we will focus on some key functions to `tidy` messy data, as compiled by me. Examples will be provided using data from previous lectures.
+
+Let's get started with initializing today's R script to include the libraries we'll be using. Start with `tidyverse` and `sf`.
+
+```{r}
+#| label: load libraries
+#| echo: true
+#| message: false
+
+library(tidyverse)
+library(sf)
+
+```
+
+
+### [`st_transform()`](https://r-spatial.github.io/sf/reference/st_transform.html)
+
+`st_transform()` transforms or converts coordinates of simple feature geospatial data. Spatial projections are fraught with peril in geospatial visualizations.  Our first function is one that has been used a bunch of times - `st_transform()`. Leaflet needs its data transformed into WGS84 and `st_transform()` is the function that makes the coordinate reference system go the right place. 
+
+```{r}
+#| label: Import SoCalEJ and warehouse data
+#| echo: true
+#| message: false
+
+URL.path <- 'https://raw.githubusercontent.com/RadicalResearchLLC/EDVcourse/main/CalEJ4/CalEJ.geoJSON'
+SoCalEJ <- st_read(URL.path) |>
+  st_transform("+proj=longlat +ellps=WGS84 +datum=WGS84")
+
+```
+
+### [`filter()`](https://dplyr.tidyverse.org/reference/filter.html)
+
+`filter()` is used to subset a data table, retaining any rows that meet the conditions of the filter. 
+
+- `filter()` is used on numbers by applying operators (e.g., >, =, <, >=, <=).  
+- `filter()` can be applied on character strings by using the identity operator `==`.  
+- `filter()` can be applied to multiple character strings by using the %in% operator on lists.  
+
+In the first example, `filter()`was applied to remove the values that were set at -999; we only believed values from 0-100 were reasonable.  @fig-Asthma_county1 uses `filter()` to remove those values. I've also shown an example without the filter applied in @fig-Asthma_all . Not removing those rows messes up our visualization.   
+
+```{r}
+#| label: fig-Asthma_county1
+#| fig-cap: Asthma census tract distribution by county
+#| echo: true
+#| warning: false
+
+SoCalEJ |>
+  filter(AsthmaP >= 0) |>
+  ggplot(aes(x = County, y = AsthmaP)) +
+  geom_boxplot()
+
+```
+```{r}
+#| label: fig-Asthma_all
+#| fig-cap: Asthma census tract distribution by county without filter
+#| echo: true
+#| warning: false
+SoCalEJ |>
+  #filter()
+  ggplot(aes(x = County, y = AsthmaP)) +
+  geom_boxplot()
+```
+
+
+In @sec-EJdata we also applied filter in two successive data transformations that are good examples of data munging. After creating a narrow data set, we apply `filter(value >=0)` to remove all negative values. Then we applied `filter(variable %in% c('OzoneP', 'DieselPM_P', 'PolBurdP'))` to select three specific variable choices out of the 55 we had available. If we exclude that second filter, the plot becomes crazy busy.  
+
+```{r}
+#| label: Tidy data for manipulation
+#| echo: true
+#| warning: false
+
+# select socioeconomic indicators and make them narrow - only include counties above 70%
+SoCal_narrow <- SoCalEJ |>
+  st_set_geometry(value = NULL) |>
+  pivot_longer(cols = c(5:66), names_to = 'variable', values_to = 'value') |>
+  filter(value >=0)
+
+SoCal_narrow |>
+  filter(variable %in% c('OzoneP', 'DieselPM_P', 'PolBurdP')) |>
+  ggplot(aes(x = County, y = value, fill= variable)) +
+  geom_boxplot()
+
+SoCal_narrow |>
+  #filter(variable %in% c('OzoneP', 'DieselPM_P', 'PolBurdP')) |>
+  ggplot(aes(x = County, y = value, fill= variable)) +
+  geom_boxplot()
+
+```
+
+### [`select()`](https://dplyr.tidyverse.org/reference/select.html)
+
+`select()` variables (i.e., columns) in a data table for retention. 
+
+- `select()` can be applied to subsets column number or name.
+- `select()` also has some pattern matching helpers.  
+
+@sec-EJtheory included an example of using `select()` on the SoCalEJ dataset. The raw dataset is MESSY! 
+
+### [`mutate()`](https://dplyr.tidyverse.org/reference/mutate.html)
+
+`mutate()` adds new variables and preserves existing ones. `mutate()` can be used to overwrite existing variables - careful with name choices.
+
+This is a great function for synthesizing information, transformations, and combining variables. 
+
+- changing units - use `mutate()`
+- creating a rate or normalizing data - use `mutate()`
+- need a new variable or category - use `mutate()`
+
+I used `mutate()` to create a decimal date function for our CH~4~ visualizations in @sec-import2.  
+
+Let's use `mutate()` to convert the estimate the census tract population of Hispanic and African American groups in SoCalEJ.  In SoCalEJ, we have a variable called `TotPop19`, which is the total population in 2019. We also have the percentage of population by census tract in each ethnic group.  We can use mutate to create new variables.  
+
+```{r}
+#| label: Mutate example
+#| echo: true
+#| warning: false 
+
+SoCalEJ2 <- SoCalEJ |> 
+  #select only used variables
+  select(Tract, TotPop19, Hispanic, AfricanAm) |> 
+  #filter to make sure we don't divide by zero population tracts
+  filter(TotPop19 > 0 & Hispanic >= 0 & AfricanAm >= 0) |> 
+  #mutate to create new variables
+  mutate(HispTot = round(Hispanic*TotPop19/100, 0),
+         AfriAmTot = round(AfricanAm*TotPop19/100,0))
+
+head(SoCalEJ2)
+
+```
+
+Now let's make a figure of the Hispanic population in the Inland Empire.
+
+```{r}
+#| label: Simple boxplot
+#| echo: true
+#| warning: false 
+
+ggplot() +
+  geom_sf(data = SoCalEJ2, aes(fill = HispTot)) +
+  theme_minimal() +
+  scale_fill_viridis_c(direction = -1) +
+  coord_sf(xlim =c(-118, -117),
+           ylim = c(33.4, 34.2)) +
+  labs(fill = 'Hispanic population')
+
+```
+
+#### Exercise
+
+- Make a figure of African American (or another ethnic/racial variable) population.
+- Choose a different set of Southern California coordinates to focus in on.  
+- Choose another fill scheme (either another viridis or another scale_fill_brewer). 
+
+### [`summarize()`](https://dplyr.tidyverse.org/reference/summarise.html)
+
+`summarize()` creates a new table that reduces a dataset to a summary of all observations.  When combined with the `group_by()` function, it allows extremely powerful manipulation and generation of summary statistics about a dataset.  
+
+This example also includes the `group_by()` function. This function identifies categories to summarize the data by.  The SoCalEJ_narrow dataset has some simple grouping categories that can be used to show this. 
+
+```{r}
+#| label: group by summarize on SoCal_narrow
+#| echo: true
+
+
+SoCal_basic <- SoCal_narrow |>
+  group_by(variable) |>
+  summarize(count = n(), average = mean(value), min = min(value), max =       max(value), stdev = sd(value))
+
+head(SoCal_basic)
+```
+
+And of course, we can combine our functions to dig even deeper. This example focuses on just a few variables to group the data into smaller subsets of County.
+
+```{r}
+#| label: group by summarize complicated
+#| echo: true
+
+
+
+SoCal_complicated <- SoCal_narrow |>
+  filter(variable %in% c('CIscoreP', 'AsthmaP', 'LowBirWP', 'CardiovasP')) |>
+  group_by(variable, County) |>
+  summarize(count = n(), average = mean(value), min = min(value), max =       max(value), stdev = sd(value))
+
+head(SoCal_complicated, 15)
+
+```
+
