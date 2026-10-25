@@ -26,10 +26,12 @@ book:
       - EJPolygons.qmd
     - part: data.qmd  
       chapters:
-      - import2.qmd  
-#      - export.qmd  
-#      - munging.qmd  
-#      - import3.qmd  
+      - import2.qmd 
+      - import3.qmd  
+      - munging.qmd  
+      - export.qmd  
+
+
 #      - assignment3.qmd
 #    - part: projects.qmd
 #      chapters:
