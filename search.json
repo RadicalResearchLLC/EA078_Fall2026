@@ -721,6 +721,100 @@
     ]
   },
   {
+    "objectID": "projects.html",
+    "href": "projects.html",
+    "title": "Unit 4: Special Projects",
+    "section": "",
+    "text": "Projects\nIn this unit, we will focus on the topics of interest for the class projects. I will provide a basic overview of the topic areas, but the class will spend most of the time leading the research. Three graded assignments are associated with this section.",
+    "crumbs": [
+      "Home",
+      "Unit 4: Special Projects"
+    ]
+  },
+  {
+    "objectID": "projects.html#projects",
+    "href": "projects.html#projects",
+    "title": "Unit 4: Special Projects",
+    "section": "",
+    "text": "Group presentation - groups of four\nIndividual visualization - individually developed prototypes on the theme of the group.\nGroup project - groups of four",
+    "crumbs": [
+      "Home",
+      "Unit 4: Special Projects"
+    ]
+  },
+  {
+    "objectID": "research.html",
+    "href": "research.html",
+    "title": "14  Research sites",
+    "section": "",
+    "text": "14.1 Group Project Topics\n-Density/Population/Voting Rates or Turnout\n-Transportation Facilities\n-Geography/Topography\n-Wealth/Poverty/Education\n-Race/Ethnicity/Linguistic Isolation",
+    "crumbs": [
+      "Home",
+      "Unit 4: Special Projects",
+      "<span class='chapter-number'>14</span>  <span class='chapter-title'>Research sites</span>"
+    ]
+  },
+  {
+    "objectID": "research.html#data-sources-that-might-be-useful",
+    "href": "research.html#data-sources-that-might-be-useful",
+    "title": "14  Research sites",
+    "section": "14.2 Data Sources that might be useful",
+    "text": "14.2 Data Sources that might be useful\n-tidycensus data for\n\nrace and ethnicity\nmedian household income\npoverty rates (B17010_001, B17010_002)\ntigris data for\n\nplaces()\nroads()\nrails()\n\nCalEnviroScreen5.0 for\n\nlinguistic isolation\nlow educational attainment\n\nsf for\n\nst_centroid()\nst_distance()\n\n\n-Other\n- population and density - provided or calculatable in class_GreenGrey.csv\n- CA voter registration rates and voting rates - Public airports - 30x30 Terrestrial Conserved Areas",
+    "crumbs": [
+      "Home",
+      "Unit 4: Special Projects",
+      "<span class='chapter-number'>14</span>  <span class='chapter-title'>Research sites</span>"
+    ]
+  },
+  {
+    "objectID": "joins.html",
+    "href": "joins.html",
+    "title": "15  Joins",
+    "section": "",
+    "text": "15.1 Load libraries\nlibrary(tidyverse)\n\n── Attaching core tidyverse packages ──────────────────────── tidyverse 2.0.0 ──\n✔ dplyr     1.2.1     ✔ readr     2.2.0\n✔ forcats   1.0.1     ✔ stringr   1.6.0\n✔ ggplot2   4.0.3     ✔ tibble    3.3.1\n✔ lubridate 1.9.5     ✔ tidyr     1.3.2\n✔ purrr     1.2.2     \n── Conflicts ────────────────────────────────────────── tidyverse_conflicts() ──\n✖ dplyr::filter() masks stats::filter()\n✖ dplyr::lag()    masks stats::lag()\nℹ Use the conflicted package (&lt;http://conflicted.r-lib.org/&gt;) to force all conflicts to become errors\n\nlibrary(sf)\n\nLinking to GEOS 3.14.1, GDAL 3.12.1, PROJ 9.7.1; sf_use_s2() is TRUE\n\nlibrary(leaflet)",
+    "crumbs": [
+      "Home",
+      "Unit 4: Special Projects",
+      "<span class='chapter-number'>15</span>  <span class='chapter-title'>Joins</span>"
+    ]
+  },
+  {
+    "objectID": "joins.html#california-place-boundaries",
+    "href": "joins.html#california-place-boundaries",
+    "title": "15  Joins",
+    "section": "\n15.2 California Place Boundaries",
+    "text": "15.2 California Place Boundaries\nIf you haven’t already, please install tigris.\n\ninstall.packages('tigris')\n\nThen, once installed, we load the library.\n\nlibrary(tigris)\n\nTo enable caching of data, set `options(tigris_use_cache = TRUE)`\nin your R script or .Rprofile.\n\n\nAs always, there’s a bunch of cool functions. We will use counties() and then places().\n\nCA_counties &lt;- counties(state = 'CA', cb = TRUE, year = 2024, progress_bar = FALSE) \n\nleaflet() |&gt; \n  addTiles() |&gt; \n  addPolylines(data = CA_counties)\n\nWarning: sf layer has inconsistent datum (+proj=longlat +datum=NAD83 +no_defs).\nNeed '+proj=longlat +datum=WGS84'\n\n\n\n\n\n\n\n#read the data\nCA_places &lt;- places(state = 'CA', cb = T, #pull for California, lower detail level\n                    year = 2024, \n                    progress_bar = FALSE) |&gt; \n  st_transform(crs = 4326)\n  \nhead(CA_places)\n\nSimple feature collection with 6 features and 12 fields\nGeometry type: MULTIPOLYGON\nDimension:     XY\nBounding box:  xmin: -120.9687 ymin: 33.31807 xmax: -117.2789 ymax: 37.74229\nGeodetic CRS:  WGS 84\n  STATEFP PLACEFP  PLACENS          GEOIDFQ   GEOID      NAME       NAMELSAD\n1      06   02000 02409704 1600000US0602000 0602000   Anaheim   Anaheim city\n2      06   21230 02650584 1600000US0621230 0621230  Eastvale  Eastvale city\n3      06   61068 02410962 1600000US0661068 0661068 Riverbank Riverbank city\n4      06   03274 02409763 1600000US0603274 0603274    Avalon    Avalon city\n5      06   62000 02410965 1600000US0662000 0662000 Riverside Riverside city\n6      06   36490 02410102 1600000US0636490 0636490  Industry  Industry city\n  STUSPS STATE_NAME LSAD     ALAND   AWATER                       geometry\n1     CA California   25 130232149  1567025 MULTIPOLYGON (((-118.0174 3...\n2     CA California   25  32837284  1143505 MULTIPOLYGON (((-117.6154 3...\n3     CA California   25  12198110    68157 MULTIPOLYGON (((-120.9687 3...\n4     CA California   25   7473920 12349954 MULTIPOLYGON (((-118.3467 3...\n5     CA California   25 210174363   797658 MULTIPOLYGON (((-117.5238 3...\n6     CA California   25  30491281   717580 MULTIPOLYGON (((-118.0575 3...\n\n\n1,618 cities is too many places to show.\nLet’s use the %in% operator to filter() those places from the list in our cities list.\nFigure 15.1 shows a leaflet map of the cities, zoomed into the main valley.\n\nproject_places &lt;- CA_places |&gt; \n  filter(NAME %in% c('Los Angeles', 'San Diego', 'Long Beach', 'Anaheim',\n    'Riverside', 'Irvine', 'San Bernardino', 'Fontana', 'Moreno Valley',\n    'Glendale', 'Ontario', 'Lancaster', 'Victorville', 'Newport Beach',\n    'Buena Park', 'Redlands', 'Palm Springs', 'Claremont', \n    'Bloomington', 'Mead Valley', 'Santa Fe Springs')) \n\nleaflet() |&gt; \n  addTiles() |&gt; \n  addPolygons(data = project_places,\n              color = 'black',\n              weight = 1,\n              fillOpacity = 0.3,\n              label = ~NAME)\n\n\n\n\n\n\nFigure 15.1: Fontana and Bloomington on a leaflet map",
+    "crumbs": [
+      "Home",
+      "Unit 4: Special Projects",
+      "<span class='chapter-number'>15</span>  <span class='chapter-title'>Joins</span>"
+    ]
+  },
+  {
+    "objectID": "joins.html#spatial-joins",
+    "href": "joins.html#spatial-joins",
+    "title": "15  Joins",
+    "section": "\n15.3 Spatial Joins",
+    "text": "15.3 Spatial Joins\nSpatial joins use geospatial information to identify overlapping geometries in space. Thus, if one has two geospatial datasets, one can quickly identify intersections of interest.\n\n15.3.1 Example 1 - Spatial Joins\nLet’s pick all the cities and census designated places in Los Angeles County.\nStep 1 - pull Los Angeles County spatial boundaries using the county\n\n#read the data\nLA_county &lt;- counties(state = 'CA', cb = T, progress_bar = FALSE) |&gt;  #pull for California, lower detail level, year = 2022 ) \n  st_transform(crs = 4326) |&gt; \n  filter(NAME == 'Los Angeles') # Just pick LA County\n\nRetrieving data for the year 2024\n\n\nGreat!\nNow let’s spatially filter the Los Angeles project places using st_filter() from the sf package.\nThe syntax is to provide the basic dataset to filter first, then the geospatial polygon to filter on second.\n\nLA_places &lt;- project_places |&gt; \n  st_intersection(LA_county) # This adjective includes fully 'covered' places - not ones that merely intersect partially, \n\nWarning: attribute variables are assumed to be spatially constant throughout\nall geometries\n\n# which is the default\n\nhead(LA_places)\n\nSimple feature collection with 6 features and 24 fields\nGeometry type: POLYGON\nDimension:     XY\nBounding box:  xmin: -118.6682 ymin: 33.70515 xmax: -117.6777 ymax: 34.76915\nGeodetic CRS:  WGS 84\n   STATEFP PLACEFP  PLACENS          GEOIDFQ   GEOID             NAME\n3       06   43000 02410866 1600000US0643000 0643000       Long Beach\n5       06   40130 02411620 1600000US0640130 0640130        Lancaster\n6       06   44000 02410877 1600000US0644000 0644000      Los Angeles\n11      06   13756 02409465 1600000US0613756 0613756        Claremont\n12      06   69154 02411823 1600000US0669154 0669154 Santa Fe Springs\n21      06   30000 02410597 1600000US0630000 0630000         Glendale\n                NAMELSAD STUSPS STATE_NAME LSAD      ALAND   AWATER STATEFP.1\n3        Long Beach city     CA California   25  131240386 70390689        06\n5         Lancaster city     CA California   25  244189280   651713        06\n6       Los Angeles city     CA California   25 1218641632 80409616        06\n11        Claremont city     CA California   25   34537069   352454        06\n12 Santa Fe Springs city     CA California   25   22942025   101085        06\n21         Glendale city     CA California   25   78939380   330542        06\n   COUNTYFP COUNTYNS      GEOIDFQ.1 GEOID.1      NAME.1         NAMELSAD.1\n3       037 00277283 0500000US06037   06037 Los Angeles Los Angeles County\n5       037 00277283 0500000US06037   06037 Los Angeles Los Angeles County\n6       037 00277283 0500000US06037   06037 Los Angeles Los Angeles County\n11      037 00277283 0500000US06037   06037 Los Angeles Los Angeles County\n12      037 00277283 0500000US06037   06037 Los Angeles Los Angeles County\n21      037 00277283 0500000US06037   06037 Los Angeles Los Angeles County\n   STUSPS.1 STATE_NAME.1 LSAD.1     ALAND.1   AWATER.1\n3        CA   California     06 10516008433 1784982940\n5        CA   California     06 10516008433 1784982940\n6        CA   California     06 10516008433 1784982940\n11       CA   California     06 10516008433 1784982940\n12       CA   California     06 10516008433 1784982940\n21       CA   California     06 10516008433 1784982940\n                         geometry\n3  POLYGON ((-118.0633 33.8241...\n5  POLYGON ((-118.3252 34.7506...\n6  POLYGON ((-118.6682 34.1767...\n11 POLYGON ((-117.6777 34.1651...\n12 POLYGON ((-118.0984 33.9433...\n21 POLYGON ((-118.3078 34.1611...\n\n\nOk, let’s make a map to see if these are just the correct cities.\nFigure 15.2 shows the place and city boundaries in blue, and LA County in red.\n\nleaflet() |&gt; \n  addTiles() |&gt; \n  addPolylines(data = LA_county,\n              color = 'red') |&gt; \n  addPolygons(data = LA_places,\n              color = 'black',\n              fillOpacity = 0.2,\n              label = ~NAME,\n              weight = 2)\n\n\n\n\n\n\nFigure 15.2: Los Angeles County and its cities and places on a leaflet map.",
+    "crumbs": [
+      "Home",
+      "Unit 4: Special Projects",
+      "<span class='chapter-number'>15</span>  <span class='chapter-title'>Joins</span>"
+    ]
+  },
+  {
+    "objectID": "joins.html#database-joins",
+    "href": "joins.html#database-joins",
+    "title": "15  Joins",
+    "section": "\n15.4 Database Joins",
+    "text": "15.4 Database Joins\nDataset CA_places has the geospatial information on city and census designated place boundaries. Some of the other datasets you are using have the information you would like to compare. How can we merge or join these disparate data layers for visualization and analysis?\nThere are two types of joins that can help to merge disparate datasets.\nThe first type of join is based on unique records in both datasets. If you have a column in dataset A and it has some matching records in dataset B, there are ways to join the two datasets.\nHere’s all the permutations. - inner_join() - keep only records present in both dataset A and B.\n- left_join() - keep all records from the dataset A and only matching variables from B. Fill missing with NA. - right_join() - keep all records from the dataset B and only matching variables from A. Fill missing with NA. - full_join() - keep all records from A and B - fill NA in any records where dataset is missing from one of the datasets.\n- anti_join() - keep only records from A that don’t occur in B.\nThe example below shows Venn diagrams of all the permutations.\n\n\nJoin Venn Diagrams - credit Tavareshugo github\n\n\n15.4.1 Joining population data for a subset of cities.\nLoad tidycensus.\n\nlibrary(tidycensus)\n\nGet population estimates for cities using get_estimates()\n\nplacePop &lt;- get_estimates(geography = 'place', state = 'CA', year=  2024)\n\nWarning: For post-2020 Census estimates, `get_estimates()` now uses the `vintage` argument to specify the PEP vintage, and the `year` argument to isolate a year within that vintage.\n! This may be a breaking change in your code\n! Omitting `vintage` may lead to incorrect or unexpected results.\n\n\nUsing the Vintage 2024 Population Estimates\n\nhead(placePop)\n\n# A tibble: 6 × 5\n  GEOID   NAME                          variable     year value\n  &lt;chr&gt;   &lt;chr&gt;                         &lt;chr&gt;       &lt;int&gt; &lt;dbl&gt;\n1 0600296 Adelanto city, California     POPESTIMATE  2024 37941\n2 0600394 Agoura Hills city, California POPESTIMATE  2024 19429\n3 0600562 Alameda city, California      POPESTIMATE  2024 78795\n4 0600674 Albany city, California       POPESTIMATE  2024 19439\n5 0600884 Alhambra city, California     POPESTIMATE  2024 80279\n6 0600947 Aliso Viejo city, California  POPESTIMATE  2024 50457\n\n\nAlright, we have population data and place names. Let’s see if we can show city populations using a join function.\nFirst, we need to edit those names to remove the city, California part.\n\nplacePop2 &lt;- placePop |&gt; \n  mutate(name2 = str_remove(NAME, ' city, California'))\n\nhead(placePop2)\n\n# A tibble: 6 × 6\n  GEOID   NAME                          variable     year value name2       \n  &lt;chr&gt;   &lt;chr&gt;                         &lt;chr&gt;       &lt;int&gt; &lt;dbl&gt; &lt;chr&gt;       \n1 0600296 Adelanto city, California     POPESTIMATE  2024 37941 Adelanto    \n2 0600394 Agoura Hills city, California POPESTIMATE  2024 19429 Agoura Hills\n3 0600562 Alameda city, California      POPESTIMATE  2024 78795 Alameda     \n4 0600674 Albany city, California       POPESTIMATE  2024 19439 Albany      \n5 0600884 Alhambra city, California     POPESTIMATE  2024 80279 Alhambra    \n6 0600947 Aliso Viejo city, California  POPESTIMATE  2024 50457 Aliso Viejo \n\n\n\nproject_Pop &lt;- project_places |&gt; \n  left_join(placePop2, by = c('NAME' = 'name2')) |&gt; \n  select(NAME, ALAND, year, value, geometry) |&gt; \n  arrange(desc(value))\n\nhead(project_Pop)\n\nSimple feature collection with 6 features and 4 fields\nGeometry type: MULTIPOLYGON\nDimension:     XY\nBounding box:  xmin: -118.6682 ymin: 32.53486 xmax: -116.9057 ymax: 34.33716\nGeodetic CRS:  WGS 84\n         NAME      ALAND year   value                       geometry\n1 Los Angeles 1218641632 2024 3878704 MULTIPOLYGON (((-118.6682 3...\n2   San Diego  844568357 2024 1404452 MULTIPOLYGON (((-116.9319 3...\n3  Long Beach  131240386 2024  450901 MULTIPOLYGON (((-118.249 33...\n4     Anaheim  130232149 2024  344561 MULTIPOLYGON (((-118.0174 3...\n5   Riverside  210174363 2024  323757 MULTIPOLYGON (((-117.5238 3...\n6      Irvine  169937340 2024  318683 MULTIPOLYGON (((-117.8686 3...\n\n\nTime for a map. Figure 15.3 shows population of cities in Los Angeles County other than the city of Los Angeles.\n\npalPop &lt;- colorQuantile(domain = project_Pop$value,\n                       palette = 'OrRd', n = 7)\n\nleaflet() |&gt; \n  addProviderTiles(provider = providers$Esri.WorldGrayCanvas) |&gt; \n  addPolygons(data = project_Pop,\n              color = ~palPop(value),\n              fillOpacity = 0.7,\n              label = ~str_c(NAME, ', ', value), # add concatenated string label with city name and population\n              weight = 3) |&gt; \n  addLegend(data = project_Pop,\n            title = '2024 population',\n            pal = palPop,\n            values = ~value)\n\n\n\n\n\n\nFigure 15.3: City populations on a leaflet map.",
+    "crumbs": [
+      "Home",
+      "Unit 4: Special Projects",
+      "<span class='chapter-number'>15</span>  <span class='chapter-title'>Joins</span>"
+    ]
+  },
+  {
     "objectID": "syllabus.html",
     "href": "syllabus.html",
     "title": "Appendix A — Course Syllabus",
