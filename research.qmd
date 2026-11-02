@@ -1,0 +1,46 @@
+# Research sites {#sec-research}
+
+::: {.callout-note appearance="simple"}
+Today we'll be doing an overview and survey on Group Project topics. There will be in-class time to work on your project.
+:::
+
+## Group Project Topics
+
+-Density/Population/Voting Rates or Turnout  
+-Transportation Facilities  
+-Geography/Topography  
+-Wealth/Poverty/Education  
+-Race/Ethnicity/Linguistic Isolation 
+
+## Data Sources that might be useful
+
+-`tidycensus` data for
+ 
+  - [race and ethnicity](https://radicalresearch.llc/EA078_Fall2026/import3.html#example-2---los-angeles-county---racial-variables) 
+  - [median household income](https://radicalresearch.llc/EA078_Fall2026/import3.html#example-1---los-angeles-census-tracts)
+  - [poverty rates](https://walker-data.com/census-r/spatial-analysis-with-us-census-data.html?q=poverty#computing-demographic-estimates-for-zones-with-areal-interpolation) (B17010_001, B17010_002)
+
+- `tigris` data for
+  - `places()`
+  - `roads()`
+  - `rails()`
+
+- CalEnviroScreen5.0 for
+  - linguistic isolation
+  - low educational attainment
+  
+- `sf` for
+  - `st_centroid()` 
+  - `st_distance()`
+   
+
+-Other  
+  - population and density - provided or calculatable in class_GreenGrey.csv   
+  - [CA voter registration rates and voting rates](https://statewidedatabase.org/d20/g24.html)
+  - [Public airports](https://data.ca.gov/@caltrans/airport-boundaries)
+  - [30x30 Terrestrial Conserved Areas](https://www.californianature.ca.gov)
+  
+
+
+  
+

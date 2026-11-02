@@ -1,0 +1,244 @@
+# Joins {#sec-joins}
+
+::: {.callout-note appearance="simple"}
+Today is going to be a few examples riffing on class Group Projects
+:::
+  
+## Load libraries
+
+```{r}
+library(tidyverse)
+library(sf)
+library(leaflet)
+```
+
+## California Place Boundaries  
+
+If you haven't already, please install `tigris`.
+
+```{r}
+#| eval: false
+install.packages('tigris')
+```
+
+Then, once installed, we load the library.
+
+```{r}
+library(tigris)
+```
+
+As always, there's a bunch of cool functions. We will use `counties()` and then `places()`. 
+
+```{r}
+#| label: CA Counties
+#| echo: true
+#| quiet: true
+
+CA_counties <- counties(state = 'CA', cb = TRUE, year = 2024, progress_bar = FALSE) 
+
+leaflet() |> 
+  addTiles() |> 
+  addPolylines(data = CA_counties)
+
+```
+
+```{r}
+#| label: read, and transform steps for SoCal Cities
+#| echo: true
+
+#read the data
+CA_places <- places(state = 'CA', cb = T, #pull for California, lower detail level
+                    year = 2024, 
+                    progress_bar = FALSE) |> 
+  st_transform(crs = 4326)
+  
+head(CA_places)
+
+```
+
+1,618 cities is too many places to show.  
+
+Let's use the `%in%` operator to `filter()` those places from the list in our cities list.
+
+@fig-project_leaflet shows a leaflet map of the cities, zoomed into the main valley.
+
+```{r}
+#| label: fig-project_leaflet
+#| echo: true
+#| warning: false
+#| fig-cap: Fontana and Bloomington on a leaflet map
+#| 
+
+project_places <- CA_places |> 
+  filter(NAME %in% c('Los Angeles', 'San Diego', 'Long Beach', 'Anaheim',
+    'Riverside', 'Irvine', 'San Bernardino', 'Fontana', 'Moreno Valley',
+    'Glendale', 'Ontario', 'Lancaster', 'Victorville', 'Newport Beach',
+    'Buena Park', 'Redlands', 'Palm Springs', 'Claremont', 
+    'Bloomington', 'Mead Valley', 'Santa Fe Springs')) 
+
+leaflet() |> 
+  addTiles() |> 
+  addPolygons(data = project_places,
+              color = 'black',
+              weight = 1,
+              fillOpacity = 0.3,
+              label = ~NAME)
+```
+
+## Spatial Joins 
+
+Spatial joins use geospatial information to identify overlapping geometries in space.  Thus, if one has two geospatial datasets, one can quickly identify intersections of interest.
+
+### Example 1 - Spatial Joins
+
+Let's pick all the cities and census designated places in Los Angeles County.
+
+Step 1 - pull Los Angeles County spatial boundaries using the `county`
+
+```{r}
+#| label: import just Los Angeles County
+#| echo: true
+
+#read the data
+LA_county <- counties(state = 'CA', cb = T, progress_bar = FALSE) |>  #pull for California, lower detail level, year = 2022 ) 
+  st_transform(crs = 4326) |> 
+  filter(NAME == 'Los Angeles') # Just pick LA County
+```
+
+Great!
+
+Now let's spatially filter the Los Angeles project places using `st_filter()` from the `sf` package.
+
+The syntax is to provide the basic dataset to filter first, then the geospatial polygon to filter on second.
+
+```{r}
+
+LA_places <- project_places |> 
+  st_intersection(LA_county) # This adjective includes fully 'covered' places - not ones that merely intersect partially, 
+# which is the default
+
+head(LA_places)
+
+```
+Ok, let's make a map to see if these are just the correct cities.
+
+@fig-LAPlaces shows the place and city boundaries in blue, and LA County in red.  
+
+
+```{r}
+#| label: fig-LAPlaces
+#| echo: true
+#| warning: false
+#| fig-cap: Los Angeles County and its cities and places on a leaflet map.
+
+leaflet() |> 
+  addTiles() |> 
+  addPolylines(data = LA_county,
+              color = 'red') |> 
+  addPolygons(data = LA_places,
+              color = 'black',
+              fillOpacity = 0.2,
+              label = ~NAME,
+              weight = 2)
+
+```
+
+
+## Database Joins 
+
+Dataset `CA_places` has the geospatial information on city and census designated place boundaries. Some of the other datasets you are using have the information you would like to compare.  How can we merge or join these disparate data layers for visualization and analysis?
+  
+There are two types of joins that can help to merge disparate datasets.
+
+The first type of join is based on unique records in both datasets.  If you have a column in dataset *A* and it has some matching records in dataset *B*, there are ways to join the two datasets.
+
+Here's all the permutations.                                                                                                      -   `inner_join()` - keep only records present in both dataset A and B.         
+-   `left_join()` - keep **all** records from the dataset A and only matching variables from B. Fill missing with **NA**.
+-   `right_join()` - keep **all** records from the dataset B and only matching variables from A. Fill missing with **NA**.
+-   `full_join()` - keep **all** records from A and B - fill **NA** in any records where dataset is missing from one of the datasets.                                              
+-   `anti_join()` - keep **only** records from A that don't occur in B.
+
+The example below shows Venn diagrams of all the permutations.
+
+![Join Venn Diagrams - credit **Tavareshugo** github](https://tavareshugo.github.io/r-intro-tidyverse-gapminder/fig/07-dplyr_joins.svg)
+
+### Joining population data for a subset of cities.
+
+Load `tidycensus`.
+
+```{r}
+#| eval: true
+
+
+library(tidycensus)
+
+```
+
+Get population estimates for cities using `get_estimates()`
+
+```{r}
+#| label: getPopulation_estimates
+#| eval: true
+
+placePop <- get_estimates(geography = 'place', state = 'CA', year=  2024)
+
+head(placePop)
+
+```
+
+
+Alright, we have population data and place names.  Let's see if we can show city populations using a join function.
+
+First, we need to edit those names to remove the ` city, California` part. 
+
+```{r}
+#| label: tidy_names
+#| eval: true
+
+placePop2 <- placePop |> 
+  mutate(name2 = str_remove(NAME, ' city, California'))
+
+head(placePop2)
+
+```
+
+```{r}
+#| label: left_join greyGreen cities
+#| eval: true
+
+project_Pop <- project_places |> 
+  left_join(placePop2, by = c('NAME' = 'name2')) |> 
+  select(NAME, ALAND, year, value, geometry) |> 
+  arrange(desc(value))
+
+head(project_Pop)
+
+```
+
+Time for a map.  @fig-population shows population of cities in Los Angeles County other than the city of Los Angeles.  
+
+```{r}
+#| label: fig-population
+#| echo: true
+#| warning: false
+#| fig-cap: City populations on a leaflet map.
+
+palPop <- colorQuantile(domain = project_Pop$value,
+                       palette = 'OrRd', n = 7)
+
+leaflet() |> 
+  addProviderTiles(provider = providers$Esri.WorldGrayCanvas) |> 
+  addPolygons(data = project_Pop,
+              color = ~palPop(value),
+              fillOpacity = 0.7,
+              label = ~str_c(NAME, ', ', value), # add concatenated string label with city name and population
+              weight = 3) |> 
+  addLegend(data = project_Pop,
+            title = '2024 population',
+            pal = palPop,
+            values = ~value)
+
+```
+
+
+

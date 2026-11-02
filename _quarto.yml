@@ -30,16 +30,13 @@ book:
       - import3.qmd  
       - munging.qmd  
       - export.qmd  
-
-
-#      - assignment3.qmd
-#    - part: projects.qmd
-#      chapters:
-#      - research.qmd 
-#      - AirQuality.qmd  
-#      - joins.qmd  
-#      - roads.qmd
+    - part: projects.qmd
+      chapters:
+      - research.qmd 
+      - joins.qmd  
 #      - shiny.qmd
+#      - roads.qmd
+
 #      - maps4.qmd  
 #      - roads_rails_tracts_buffers.qmd
 #      - animate.qmd
