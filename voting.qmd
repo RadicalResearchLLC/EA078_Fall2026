@@ -173,7 +173,7 @@ Land doesn't vote - people do.  Let's squeeze the map to show people. Unfortunat
 First we need to do some cartographic transformations.
 
 ```{r}
-#| label: Cartogram US vote map
+#| label: Cartogram crs transform
 #| warning: false
 #| echo: true
 
@@ -195,7 +195,7 @@ ca_cartogram <- st_transform(ca_cartogram, st_crs(countyVotes)) #or use 4269 for
 #| warning: false
 #| echo: true
 
-ggplot(data = us_cartogram, aes(fill = percent_diff)) +
+ggplot(data = ca_cartogram, aes(fill = percent_diff)) +
   geom_sf() +
   scale_fill_gradient2(low = 'blue', mid = 'white', high = 'red', midpoint = 0) + ##Manual gradient for fill to make a traditional map
   theme_map() + #from ggthemes
