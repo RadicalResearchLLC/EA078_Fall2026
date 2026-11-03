@@ -815,6 +815,42 @@
     ]
   },
   {
+    "objectID": "voting.html",
+    "href": "voting.html",
+    "title": "16  Voting maps",
+    "section": "",
+    "text": "16.1 Install and load libraries\nHappy post-election day.\ninstall.packages('cartogram')\ninstall.packages('ggthemes')\nlibrary(sf)\nlibrary(tidyverse)\nlibrary(cartogram)\nlibrary(tigris)\nlibrary(ggthemes)",
+    "crumbs": [
+      "Home",
+      "Unit 4: Special Projects",
+      "<span class='chapter-number'>16</span>  <span class='chapter-title'>Voting maps</span>"
+    ]
+  },
+  {
+    "objectID": "voting.html#maps-from-r-graph-gallery",
+    "href": "voting.html#maps-from-r-graph-gallery",
+    "title": "16  Voting maps",
+    "section": "\n16.2 Maps from R-Graph-Gallery",
+    "text": "16.2 Maps from R-Graph-Gallery\nWe will make 4 types of election maps.\nWe’ll use the ideas from r-graph-gallery\n\nregular ggplot map\n\ncartogram\n\nbubble\n\n\n16.2.1 Data\nCounty-level 2024 election results for the US are here.\n\npres2024 &lt;- read_csv('https://raw.githubusercontent.com/tonmcg/US_County_Level_Election_Results_08-24/refs/heads/master/2024_US_County_Level_Presidential_Results.csv')\n\nhead(pres2024)\n\n# A tibble: 6 × 10\n  state_name county_fips county_name    votes_gop votes_dem total_votes  diff\n  &lt;chr&gt;      &lt;chr&gt;       &lt;chr&gt;              &lt;dbl&gt;     &lt;dbl&gt;       &lt;dbl&gt; &lt;dbl&gt;\n1 Alabama    01001       Autauga County     20484      7439       28190 13045\n2 Alabama    01003       Baldwin County     95798     24934      121808 70864\n3 Alabama    01005       Barbour County      5606      4158        9832  1448\n4 Alabama    01007       Bibb County         7572      1619        9241  5953\n5 Alabama    01009       Blount County      25354      2576       28115 22778\n6 Alabama    01011       Bullock County      1101      2983        4106 -1882\n# ℹ 3 more variables: per_gop &lt;dbl&gt;, per_dem &lt;dbl&gt;, per_point_diff &lt;dbl&gt;\n\n\nLoad county geospatial data from tigris.\n\nUS_counties &lt;- counties(cb = TRUE, year = 2024, progress_bar = FALSE) \n\nhead(US_counties)\n\nSimple feature collection with 6 features and 12 fields\nGeometry type: MULTIPOLYGON\nDimension:     XY\nBounding box:  xmin: -88.47323 ymin: 30.99708 xmax: -75.04894 ymax: 38.96187\nGeodetic CRS:  NAD83\n  STATEFP COUNTYFP COUNTYNS        GEOIDFQ GEOID    NAME       NAMELSAD STUSPS\n1      01      069 00161560 0500000US01069 01069 Houston Houston County     AL\n2      01      023 00161537 0500000US01023 01023 Choctaw Choctaw County     AL\n3      01      113 00161583 0500000US01113 01113 Russell Russell County     AL\n4      10      005 00217269 0500000US10005 10005  Sussex  Sussex County     DE\n5      01      071 00161561 0500000US01071 01071 Jackson Jackson County     AL\n6      01      089 00161570 0500000US01089 01089 Madison Madison County     AL\n  STATE_NAME LSAD      ALAND    AWATER                       geometry\n1    Alabama   06 1501742250   4795418 MULTIPOLYGON (((-85.71209 3...\n2    Alabama   06 2365900084  19114321 MULTIPOLYGON (((-88.47323 3...\n3    Alabama   06 1660653961  15562947 MULTIPOLYGON (((-85.4347 32...\n4   Delaware   06 2424590442 674129051 MULTIPOLYGON (((-75.7226 38...\n5    Alabama   06 2792044612 126334711 MULTIPOLYGON (((-86.15423 3...\n6    Alabama   06 2076166271  28756353 MULTIPOLYGON (((-86.78955 3...\n\n\n\n16.2.2 Tidy and Join data for maps\nLet’s try a left join of the geospatial data using the county_fips and GEOID columns. We could also try by county name, but that is less good due to duplicates of names.\n\ncountyVotes &lt;- inner_join(US_counties, pres2024, by = c('GEOID' = 'county_fips')) |&gt; \n  select(GEOID, NAME, votes_gop, votes_dem, total_votes, diff, per_point_diff, geometry, STUSPS) |&gt; \n  mutate(percent_diff = 100*per_point_diff)\n\nhead(countyVotes)\n\nSimple feature collection with 6 features and 9 fields\nGeometry type: MULTIPOLYGON\nDimension:     XY\nBounding box:  xmin: -88.47323 ymin: 30.99708 xmax: -75.04894 ymax: 38.96187\nGeodetic CRS:  NAD83\n  GEOID    NAME votes_gop votes_dem total_votes  diff per_point_diff STUSPS\n1 01069 Houston     32469     11352       44195 21117     0.47781423     AL\n2 01023 Choctaw      4103      2515        6646  1588     0.23894072     AL\n3 01113 Russell     10078     10422       20679  -344    -0.01663523     AL\n4 10005  Sussex     81025     64836      147639 16189     0.10965260     DE\n5 01071 Jackson     20073      3276       23509 16797     0.71449232     AL\n6 01089 Madison    105430     87824      196355 17606     0.08966413     AL\n                        geometry percent_diff\n1 MULTIPOLYGON (((-85.71209 3...    47.781423\n2 MULTIPOLYGON (((-88.47323 3...    23.894072\n3 MULTIPOLYGON (((-85.4347 32...    -1.663523\n4 MULTIPOLYGON (((-75.7226 38...    10.965260\n5 MULTIPOLYGON (((-86.15423 3...    71.449232\n6 MULTIPOLYGON (((-86.78955 3...     8.966413\n\n\n\n16.2.3 Basic map\n\nggplot(data = countyVotes) +\n  geom_sf() +\n # scale_fill_gradient2(low = 'blue', mid = 'white', high = 'red', midpoint = 0) + ##Manual gradient for fill to make a traditional map\n  theme_map() + #from ggthemes\n  coord_sf(xlim =c(-124, -65),\n           ylim = c(25, 50)) \n\n\n\n\n\n\n\n\n16.2.4 Chloropleth map - binned\n\ncountyVotes |&gt; \n  mutate(color = ifelse(diff&gt;0, 'red', \n                       ifelse(diff &lt; 0, 'blue', 'white'))) |&gt; \n  ggplot() +\n  geom_sf(aes(fill = color)) +\n  scale_fill_manual(values = c('blue', 'red'), ) +\n  theme_map() + #from ggthemes\n  coord_sf(xlim =c(-124, -65),\n           ylim = c(25, 50))+\n  theme(legend.position = 'none')",
+    "crumbs": [
+      "Home",
+      "Unit 4: Special Projects",
+      "<span class='chapter-number'>16</span>  <span class='chapter-title'>Voting maps</span>"
+    ]
+  },
+  {
+    "objectID": "voting.html#gradient-chloropleth-map",
+    "href": "voting.html#gradient-chloropleth-map",
+    "title": "16  Voting maps",
+    "section": "\n16.3 Gradient chloropleth map",
+    "text": "16.3 Gradient chloropleth map\n\nggplot(data = countyVotes, aes(fill = percent_diff)) +\n  geom_sf() +\n  scale_fill_gradient2(low = 'blue', mid = 'white', high = 'red', midpoint = 0) + ##Manual gradient for fill to make a traditional map\n  theme_map() + #from ggthemes\n  coord_sf(xlim =c(-124, -65),\n           ylim = c(25, 50)) +\n  labs(fill = '% vote difference')\n\n\n\n\n\n\n\n\n16.3.1 Bubble map\nFirst, we need to make lat and lng columns for the county to center the bubbles on.\n\ntempTbl &lt;- st_coordinates(st_centroid(countyVotes)) ## create an arry of centroid coordinates  \ncountyVotes$lng &lt;- tempTbl[,1] ## assign longitude coordinate\ncountyVotes$lat &lt;- tempTbl[,2] ## assign latitude coordinate\n\n\nggplot(data = countyVotes) +\n  geom_point(aes(x = lng, y = lat, size = total_votes, color = percent_diff)) +\n  scale_color_gradient2(low = 'blue', mid = 'grey90', high = 'red', midpoint = 0) + ##Manual gradient for fill to make a traditional map\n  theme_map() + #from ggthemes\n  coord_sf(xlim =c(-124, -65),\n           ylim = c(25, 50)) +\n  theme(legend.position = 'none')\n\n\n\n\n\n\n\n\n16.3.2 Cartogram\nLand doesn’t vote - people do. Let’s squeeze the map to show people. Unfortunately, it is slow, so we’ll just do it for California.\nFirst we need to do some cartographic transformations.\n\n# need first to \"change\" the projection to Mercator (AKA Google Maps): EPSG: 3857\nca_merc &lt;- countyVotes |&gt; \n  filter(STUSPS == 'CA') |&gt; \n  st_transform(3857)\n\nca_cartogram &lt;- cartogram_cont(ca_merc, \"total_votes\", itermax = 15)\n\n# And back to the previous projection\nca_cartogram &lt;- st_transform(ca_cartogram, st_crs(countyVotes)) #or use 4269 for crs\n\n\nggplot(data = ca_cartogram, aes(fill = percent_diff)) +\n  geom_sf() +\n  scale_fill_gradient2(low = 'blue', mid = 'white', high = 'red', midpoint = 0) + ##Manual gradient for fill to make a traditional map\n  theme_map() + #from ggthemes\n  labs(fill = '% difference')",
+    "crumbs": [
+      "Home",
+      "Unit 4: Special Projects",
+      "<span class='chapter-number'>16</span>  <span class='chapter-title'>Voting maps</span>"
+    ]
+  },
+  {
     "objectID": "syllabus.html",
     "href": "syllabus.html",
     "title": "Appendix A — Course Syllabus",
