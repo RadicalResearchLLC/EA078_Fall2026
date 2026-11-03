@@ -1,0 +1,204 @@
+# Voting maps {#sec-voting}
+
+Happy post-election day.  
+
+::: {.callout-note appearance="simple"}
+Today we'll make some voting maps to visualize election results a few different ways.
+:::
+
+## Install and load libraries
+
+```{r}
+#| label: install cartogram
+#| warning: false
+#| eval: false
+
+install.packages('cartogram')
+install.packages('ggthemes')
+
+```
+
+
+```{r}
+#| label: load libraries
+#| warning: false
+#| echo: true
+
+library(sf)
+library(tidyverse)
+library(cartogram)
+library(tigris)
+library(ggthemes)
+
+```
+
+## Maps from R-Graph-Gallery
+
+We will make 4 types of election maps.
+
+We'll use the ideas from [r-graph-gallery](https://r-graph-gallery.com/map.html)
+
+- regular ggplot map  
+- cartogram    
+- bubble  
+
+### Data 
+
+County-level 2024 election results for the US are [here](https://github.com/tonmcg/US_County_Level_Election_Results_08-24/blob/master/2024_US_County_Level_Presidential_Results.csv).  
+
+```{r}
+#| label: read_data
+#| warning: false
+#| echo: true
+
+pres2024 <- read_csv('https://raw.githubusercontent.com/tonmcg/US_County_Level_Election_Results_08-24/refs/heads/master/2024_US_County_Level_Presidential_Results.csv')
+
+head(pres2024)
+
+```
+
+Load county geospatial data from tigris.
+
+```{r}
+#| label: read_counties
+#| warning: false
+#| echo: true
+
+US_counties <- counties(cb = TRUE, year = 2024, progress_bar = FALSE) 
+
+head(US_counties)
+```
+
+### Tidy and Join data for maps
+
+Let's try a left join of the geospatial data using the `county_fips` and `GEOID` columns. We could also try by county name, but that is less good due to duplicates of names.  
+
+```{r}
+#| label: join_county
+#| warning: false
+#| echo: true
+
+countyVotes <- inner_join(US_counties, pres2024, by = c('GEOID' = 'county_fips')) |> 
+  select(GEOID, NAME, votes_gop, votes_dem, total_votes, diff, per_point_diff, geometry, STUSPS) |> 
+  mutate(percent_diff = 100*per_point_diff)
+
+head(countyVotes)
+```
+
+### Basic map
+
+```{r}
+#| label: basic US county map
+#| warning: false
+#| echo: true
+
+ggplot(data = countyVotes) +
+  geom_sf() +
+ # scale_fill_gradient2(low = 'blue', mid = 'white', high = 'red', midpoint = 0) + ##Manual gradient for fill to make a traditional map
+  theme_map() + #from ggthemes
+  coord_sf(xlim =c(-124, -65),
+           ylim = c(25, 50)) 
+```
+
+### Chloropleth map - binned
+
+```{r}
+#| label: basic chloropleth map
+#| warning: false
+#| echo: true
+
+countyVotes |> 
+  mutate(color = ifelse(diff>0, 'red', 
+                       ifelse(diff < 0, 'blue', 'white'))) |> 
+  ggplot() +
+  geom_sf(aes(fill = color)) +
+  scale_fill_manual(values = c('blue', 'red'), ) +
+  theme_map() + #from ggthemes
+  coord_sf(xlim =c(-124, -65),
+           ylim = c(25, 50))+
+  theme(legend.position = 'none')
+
+```
+
+## Gradient chloropleth map
+
+```{r}
+#| label: Gradient map
+#| warning: false
+#| echo: true
+
+ggplot(data = countyVotes, aes(fill = percent_diff)) +
+  geom_sf() +
+  scale_fill_gradient2(low = 'blue', mid = 'white', high = 'red', midpoint = 0) + ##Manual gradient for fill to make a traditional map
+  theme_map() + #from ggthemes
+  coord_sf(xlim =c(-124, -65),
+           ylim = c(25, 50)) +
+  labs(fill = '% vote difference')
+```
+
+### Bubble map
+
+First, we need to make lat and lng columns for the county to center the bubbles on.
+
+```{r}
+#| label: Coordinates
+#| warning: false
+#| echo: true
+
+tempTbl <- st_coordinates(st_centroid(countyVotes)) ## create an arry of centroid coordinates  
+countyVotes$lng <- tempTbl[,1] ## assign longitude coordinate
+countyVotes$lat <- tempTbl[,2] ## assign latitude coordinate
+```
+
+
+```{r}
+#| label: Bubble map
+#| warning: false
+#| echo: true
+
+ggplot(data = countyVotes) +
+  geom_point(aes(x = lng, y = lat, size = total_votes, color = percent_diff)) +
+  scale_color_gradient2(low = 'blue', mid = 'grey90', high = 'red', midpoint = 0) + ##Manual gradient for fill to make a traditional map
+  theme_map() + #from ggthemes
+  coord_sf(xlim =c(-124, -65),
+           ylim = c(25, 50)) +
+  theme(legend.position = 'none')
+
+```
+
+### Cartogram
+
+Land doesn't vote - people do.  Let's squeeze the map to show people. Unfortunately, it is slow, so we'll just do it for California. 
+
+First we need to do some cartographic transformations.
+
+```{r}
+#| label: Cartogram US vote map
+#| warning: false
+#| echo: true
+
+# need first to "change" the projection to Mercator (AKA Google Maps): EPSG: 3857
+ca_merc <- countyVotes |> 
+  filter(STUSPS == 'CA') |> 
+  st_transform(3857)
+
+ca_cartogram <- cartogram_cont(ca_merc, "total_votes", itermax = 15)
+
+# And back to the previous projection
+ca_cartogram <- st_transform(ca_cartogram, st_crs(countyVotes)) #or use 4269 for crs
+
+
+```
+
+```{r}
+#| label: Cartogram US vote map
+#| warning: false
+#| echo: true
+
+ggplot(data = us_cartogram, aes(fill = percent_diff)) +
+  geom_sf() +
+  scale_fill_gradient2(low = 'blue', mid = 'white', high = 'red', midpoint = 0) + ##Manual gradient for fill to make a traditional map
+  theme_map() + #from ggthemes
+  labs(fill = '% difference')
+
+```

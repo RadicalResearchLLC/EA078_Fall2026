@@ -34,6 +34,7 @@ book:
       chapters:
       - research.qmd 
       - joins.qmd  
+      - voting.qmd
 #      - shiny.qmd
 #      - roads.qmd
 
