@@ -35,7 +35,7 @@ book:
       - research.qmd 
       - joins.qmd  
       - voting.qmd
-#      - shiny.qmd
+      - shiny.qmd
 #      - roads.qmd
 
 #      - maps4.qmd  
