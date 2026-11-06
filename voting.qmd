@@ -202,3 +202,5 @@ ggplot(data = ca_cartogram, aes(fill = percent_diff)) +
   labs(fill = '% difference')
 
 ```
+  
+  
