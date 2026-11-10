@@ -36,10 +36,11 @@ book:
       - joins.qmd  
       - voting.qmd
       - shiny.qmd
+      - roads_rails_tracts_buffers.qmd
 #      - roads.qmd
 
 #      - maps4.qmd  
-#      - roads_rails_tracts_buffers.qmd
+
 #      - animate.qmd
 #      - dataTheory.qmd
 #      - SoCalEarth.qmd

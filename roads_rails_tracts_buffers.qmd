@@ -1,0 +1,179 @@
+# Roads, Rails, Tracts, Buffers, and Spatial joins {#sec-roads_rails_tracts_buffers}
+
+::: {.callout-note appearance="simple"}
+Today we will be focusing on the practice of fancy geospatial data analysis and visualization.
+:::
+
+## Libraries
+
+Load the libaries first!
+
+```{r}
+#| label: load libraries
+#| echo: true
+
+library(tidyverse)
+library(sf)
+library(leaflet)
+library(tigris)
+
+```
+
+## `tigris` roads and rails.
+
+The transportation group may need roads and rails data. 
+
+Let's import some California rail data for visualization.
+
+Unfortunately, it cannot be geographically pulled for specific areas, it only includes the whole country.  
+
+```{r}
+#| label: import National rail data
+#| echo: true
+
+rails <- rails(progress_bar = FALSE, year = 2024) 
+
+head(rails)
+  
+```
+
+You can map this in leaflet, but it is a big dataset and we want to focus on the spatial domains for projects.  Let us just show the Inland Empire counties of Riverside and San Bernardino as an example.
+
+```{r}
+#| label: import SBD and RIV counties
+#| echo: true 
+
+IE_counties <- counties(state = 'CA', cb = T, progress_bar = FALSE) |>  #pull for California, lower detail level, year = 2022 ) 
+  filter(NAME %in% c('San Bernardino', 'Riverside'))
+
+head(IE_counties)
+```
+
+And now we have the two datasets we need to trim the rail data down to the local scale.  Apply `st_filter()` to get an IE_rails dataset.
+
+```{r}
+#| label: spatially filter rail to IE counties
+#| echo: true 
+
+IE_rail <- rails |> 
+  st_filter(IE_counties) |> 
+  st_transform(crs = 4326)
+
+head(IE_rail) # down to only 826 records from 120k
+
+rm(ls = rails) # this removes the big rails dataset to free up memory, you can always reimport it.
+
+```
+
+@fig-IE_rail shows the rail dataset for the Inland Empire. This is our basic map.  
+
+```{r}
+#| label: fig-IE_rail
+#| echo: true
+#| fig-cap: Inland Empire rail links from tigris
+
+IE_rail |> 
+ # st_transform(crs =4326) |> # coordinate reference transformation to WGS84 for visualization 
+  leaflet() |> 
+  addTiles() |> 
+  setView(lat = 34, lng = -117.3, zoom = 10) |> 
+  addPolylines(color = 'black',
+               weight = 4,
+               dashArray = '2,5') |> 
+  addPolylines(data = IE_counties,
+               color = 'blue',
+               weight =3)
+
+```
+
+::: {.callout-note appearance="alert"}
+Adding fancy overlay options incoming!
+:::
+
+@fig-LayersOptions shows the rail layer and a rail tile layer, and also displays the `addLayersControl()` function for allowing layers to be toggled on-off by the user.  
+
+```{r}
+#| label: fig-LayersOptions
+#| echo: true
+#| fig-cap: Inland Empire rail links with overlays!
+
+leaflet() |> 
+  addTiles() |> #define group names
+  addProviderTiles(providers$OpenRailwayMap, group = 'RailTile') |> #this is a standard provider tile
+  addLayersControl( #This provides a toggle option for layers 
+    baseGroups = c('Basemap', 'RailTile'), #this is the names for tiles
+    overlayGroups = c('RailTigris', 'County') #this is names for datalayers - polylines, polygons, markers, etc.
+   )  |>  
+  setView(lat = 34, lng = -117.3, zoom = 10) |> 
+  addPolylines(data = IE_rail,
+               color = 'black',
+               weight = 4,
+               dashArray = '2,5',
+               group = 'RailTigris') |> 
+  addPolylines(data = IE_counties,
+               color = 'blue',
+               weight =3,
+               group = 'County')
+
+```
+
+## Add roads
+
+Let's add the primary and secondary roads.  We've used the `roads()` function before, but now we will include the `primary_secondary_roads()` function to just select the federal highways, state highways, and county highways and arterials. 
+
+```{r}
+#| label: import roads
+#| echo: true
+
+IE_roads <- primary_secondary_roads(state = 'CA', year = 2024, progress_bar = FALSE) |> 
+  st_filter(IE_counties) |> ## only include Riverside and San Bernardino but don't clip to boundaries
+  st_transform(crs = 4326) ## coordinate reference transformation
+
+```
+
+Display a basic road map.
+
+```{r}
+#| label: basic road map
+#| echo: true
+
+leaflet(data = IE_roads) |> 
+  addTiles() |> 
+  setView(lat = 34, lng = -117.3, zoom = 10) |> 
+  addPolylines(color = 'darkred',
+               weight = 4,
+               dashArray = '2,5') #|> 
+
+```
+
+## Make a roads and rails map
+
+```{r}
+#| label: complicated road and rail map
+#| echo: true
+
+
+leaflet() |> 
+  addTiles(group = 'Basemap') |> #define group names
+  addProviderTiles(providers$OpenRailwayMap, group = 'RailTile') |> #this is a standard provider tile
+  addLayersControl( #This provides a toggle option for layers 
+    baseGroups = c('Basemap', 'RailTile'), #this is the names for tiles
+    overlayGroups = c('Rail', 'Roads', 'County') #this is names for datalayers - polylines, polygons, markers, etc.
+   )  |>  
+  setView(lat = 34, lng = -117.3, zoom = 10) |> 
+  addPolylines(data = IE_rail,
+               color = 'black',
+               weight = 4,
+               dashArray = '2,5',
+               group = 'Rail') |> 
+  addPolylines(data = IE_roads,
+               color = 'blue',
+               weight = 4,
+               dashArray = '3,5',
+               group = 'Roads') |> 
+  addPolylines(data = IE_counties,
+               color = 'darkred',
+               weight =3,
+               group = 'County')
+
+```
