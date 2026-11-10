@@ -899,6 +899,54 @@
     ]
   },
   {
+    "objectID": "roads_rails_tracts_buffers.html",
+    "href": "roads_rails_tracts_buffers.html",
+    "title": "18  Roads, Rails, Tracts, Buffers, and Spatial joins",
+    "section": "",
+    "text": "18.1 Libraries\nLoad the libaries first!\nlibrary(tidyverse)\n\n── Attaching core tidyverse packages ──────────────────────── tidyverse 2.0.0 ──\n✔ dplyr     1.2.1     ✔ readr     2.2.0\n✔ forcats   1.0.1     ✔ stringr   1.6.0\n✔ ggplot2   4.0.3     ✔ tibble    3.3.1\n✔ lubridate 1.9.5     ✔ tidyr     1.3.2\n✔ purrr     1.2.2     \n── Conflicts ────────────────────────────────────────── tidyverse_conflicts() ──\n✖ dplyr::filter() masks stats::filter()\n✖ dplyr::lag()    masks stats::lag()\nℹ Use the conflicted package (&lt;http://conflicted.r-lib.org/&gt;) to force all conflicts to become errors\n\nlibrary(sf)\n\nLinking to GEOS 3.14.1, GDAL 3.12.1, PROJ 9.7.1; sf_use_s2() is TRUE\n\nlibrary(leaflet)\nlibrary(tigris)\n\nTo enable caching of data, set `options(tigris_use_cache = TRUE)`\nin your R script or .Rprofile.",
+    "crumbs": [
+      "Home",
+      "Unit 4: Special Projects",
+      "<span class='chapter-number'>18</span>  <span class='chapter-title'>Roads, Rails, Tracts, Buffers, and Spatial joins</span>"
+    ]
+  },
+  {
+    "objectID": "roads_rails_tracts_buffers.html#tigris-roads-and-rails.",
+    "href": "roads_rails_tracts_buffers.html#tigris-roads-and-rails.",
+    "title": "18  Roads, Rails, Tracts, Buffers, and Spatial joins",
+    "section": "\n18.2 tigris roads and rails.",
+    "text": "18.2 tigris roads and rails.\nThe transportation group may need roads and rails data.\nLet’s import some California rail data for visualization.\nUnfortunately, it cannot be geographically pulled for specific areas, it only includes the whole country.\n\nrails &lt;- rails(progress_bar = FALSE, year = 2024) \n\nhead(rails)\n\nSimple feature collection with 6 features and 3 fields\nGeometry type: LINESTRING\nDimension:     XY\nBounding box:  xmin: -82.87502 ymin: 32.93846 xmax: -82.79365 ymax: 33.01534\nGeodetic CRS:  NAD83\n        LINEARID        FULLNAME MTFCC                       geometry\n1   110457927262 Sandersville RR R1011 LINESTRING (-82.79997 32.97...\n2   110457927263 Sandersville RR R1011 LINESTRING (-82.8064 32.995...\n3 11036352186070 Sandersville RR R1011 LINESTRING (-82.79417 32.96...\n4 11036352186069 Sandersville RR R1011 LINESTRING (-82.79908 32.94...\n5 11036352707025 Sandersville RR R1011 LINESTRING (-82.87502 33.01...\n6 11036352707024 Sandersville RR R1011 LINESTRING (-82.87009 33.01...\n\n\nYou can map this in leaflet, but it is a big dataset and we want to focus on the spatial domains for projects. Let us just show the Inland Empire counties of Riverside and San Bernardino as an example.\n\nIE_counties &lt;- counties(state = 'CA', cb = T, progress_bar = FALSE) |&gt;  #pull for California, lower detail level, year = 2022 ) \n  filter(NAME %in% c('San Bernardino', 'Riverside'))\n\nRetrieving data for the year 2024\n\nhead(IE_counties)\n\nSimple feature collection with 2 features and 12 fields\nGeometry type: MULTIPOLYGON\nDimension:     XY\nBounding box:  xmin: -117.8025 ymin: 33.42593 xmax: -114.1312 ymax: 35.80963\nGeodetic CRS:  NAD83\n  STATEFP COUNTYFP COUNTYNS        GEOIDFQ GEOID           NAME\n1      06      065 00277297 0500000US06065 06065      Riverside\n2      06      071 00277300 0500000US06071 06071 San Bernardino\n               NAMELSAD STUSPS STATE_NAME LSAD       ALAND    AWATER\n1      Riverside County     CA California   06 18671882474 242861394\n2 San Bernardino County     CA California   06 51976311347  96418184\n                        geometry\n1 MULTIPOLYGON (((-117.6763 3...\n2 MULTIPOLYGON (((-117.8025 3...\n\n\nAnd now we have the two datasets we need to trim the rail data down to the local scale. Apply st_filter() to get an IE_rails dataset.\n\nIE_rail &lt;- rails |&gt; \n  st_filter(IE_counties) |&gt; \n  st_transform(crs = 4326)\n\nhead(IE_rail) # down to only 826 records from 120k\n\nSimple feature collection with 6 features and 3 fields\nGeometry type: LINESTRING\nDimension:     XY\nBounding box:  xmin: -117.6302 ymin: 34.06714 xmax: -117.2379 ymax: 35.77347\nGeodetic CRS:  WGS 84\n        LINEARID                                FULLNAME MTFCC\n1 11031808659042                              Trona Rlwy R1011\n2 11031808659044                              Trona Rlwy R1011\n3  1101432904280                              Trona Rlwy R1011\n4 11029922421648 Southern California Regional Rail Autho R1011\n5 11029922421495 Southern California Regional Rail Autho R1011\n6 11029922422272 Southern California Regional Rail Autho R1011\n                        geometry\n1 LINESTRING (-117.3789 35.76...\n2 LINESTRING (-117.3869 35.75...\n3 LINESTRING (-117.3781 35.76...\n4 LINESTRING (-117.5615 34.09...\n5 LINESTRING (-117.2379 34.06...\n6 LINESTRING (-117.537 34.084...\n\nrm(ls = rails) # this removes the big rails dataset to free up memory, you can always reimport it.\n\nFigure 18.1 shows the rail dataset for the Inland Empire. This is our basic map.\n\nIE_rail |&gt; \n # st_transform(crs =4326) |&gt; # coordinate reference transformation to WGS84 for visualization \n  leaflet() |&gt; \n  addTiles() |&gt; \n  setView(lat = 34, lng = -117.3, zoom = 10) |&gt; \n  addPolylines(color = 'black',\n               weight = 4,\n               dashArray = '2,5') |&gt; \n  addPolylines(data = IE_counties,\n               color = 'blue',\n               weight =3)\n\nWarning: sf layer has inconsistent datum (+proj=longlat +datum=NAD83 +no_defs).\nNeed '+proj=longlat +datum=WGS84'\n\n\n\n\n\n\n\nFigure 18.1: Inland Empire rail links from tigris\n\n\n\n\n\n\n\n\n\nNote\n\n\n\nAdding fancy overlay options incoming!\n\n\nFigure 18.2 shows the rail layer and a rail tile layer, and also displays the addLayersControl() function for allowing layers to be toggled on-off by the user.\n\nleaflet() |&gt; \n  addTiles() |&gt; #define group names\n  addProviderTiles(providers$OpenRailwayMap, group = 'RailTile') |&gt; #this is a standard provider tile\n  addLayersControl( #This provides a toggle option for layers \n    baseGroups = c('Basemap', 'RailTile'), #this is the names for tiles\n    overlayGroups = c('RailTigris', 'County') #this is names for datalayers - polylines, polygons, markers, etc.\n   )  |&gt;  \n  setView(lat = 34, lng = -117.3, zoom = 10) |&gt; \n  addPolylines(data = IE_rail,\n               color = 'black',\n               weight = 4,\n               dashArray = '2,5',\n               group = 'RailTigris') |&gt; \n  addPolylines(data = IE_counties,\n               color = 'blue',\n               weight =3,\n               group = 'County')\n\nWarning: sf layer has inconsistent datum (+proj=longlat +datum=NAD83 +no_defs).\nNeed '+proj=longlat +datum=WGS84'\n\n\n\n\n\n\n\nFigure 18.2: Inland Empire rail links with overlays!",
+    "crumbs": [
+      "Home",
+      "Unit 4: Special Projects",
+      "<span class='chapter-number'>18</span>  <span class='chapter-title'>Roads, Rails, Tracts, Buffers, and Spatial joins</span>"
+    ]
+  },
+  {
+    "objectID": "roads_rails_tracts_buffers.html#add-roads",
+    "href": "roads_rails_tracts_buffers.html#add-roads",
+    "title": "18  Roads, Rails, Tracts, Buffers, and Spatial joins",
+    "section": "\n18.3 Add roads",
+    "text": "18.3 Add roads\nLet’s add the primary and secondary roads. We’ve used the roads() function before, but now we will include the primary_secondary_roads() function to just select the federal highways, state highways, and county highways and arterials.\n\nIE_roads &lt;- primary_secondary_roads(state = 'CA', year = 2024, progress_bar = FALSE) |&gt; \n  st_filter(IE_counties) |&gt; ## only include Riverside and San Bernardino but don't clip to boundaries\n  st_transform(crs = 4326) ## coordinate reference transformation\n\nDisplay a basic road map.\n\nleaflet(data = IE_roads) |&gt; \n  addTiles() |&gt; \n  setView(lat = 34, lng = -117.3, zoom = 10) |&gt; \n  addPolylines(color = 'darkred',\n               weight = 4,\n               dashArray = '2,5') #|&gt;",
+    "crumbs": [
+      "Home",
+      "Unit 4: Special Projects",
+      "<span class='chapter-number'>18</span>  <span class='chapter-title'>Roads, Rails, Tracts, Buffers, and Spatial joins</span>"
+    ]
+  },
+  {
+    "objectID": "roads_rails_tracts_buffers.html#make-a-roads-and-rails-map",
+    "href": "roads_rails_tracts_buffers.html#make-a-roads-and-rails-map",
+    "title": "18  Roads, Rails, Tracts, Buffers, and Spatial joins",
+    "section": "\n18.4 Make a roads and rails map",
+    "text": "18.4 Make a roads and rails map\n\nleaflet() |&gt; \n  addTiles(group = 'Basemap') |&gt; #define group names\n  addProviderTiles(providers$OpenRailwayMap, group = 'RailTile') |&gt; #this is a standard provider tile\n  addLayersControl( #This provides a toggle option for layers \n    baseGroups = c('Basemap', 'RailTile'), #this is the names for tiles\n    overlayGroups = c('Rail', 'Roads', 'County') #this is names for datalayers - polylines, polygons, markers, etc.\n   )  |&gt;  \n  setView(lat = 34, lng = -117.3, zoom = 10) |&gt; \n  addPolylines(data = IE_rail,\n               color = 'black',\n               weight = 4,\n               dashArray = '2,5',\n               group = 'Rail') |&gt; \n  addPolylines(data = IE_roads,\n               color = 'blue',\n               weight = 4,\n               dashArray = '3,5',\n               group = 'Roads') |&gt; \n  addPolylines(data = IE_counties,\n               color = 'darkred',\n               weight =3,\n               group = 'County')\n\nWarning: sf layer has inconsistent datum (+proj=longlat +datum=NAD83 +no_defs).\nNeed '+proj=longlat +datum=WGS84'",
+    "crumbs": [
+      "Home",
+      "Unit 4: Special Projects",
+      "<span class='chapter-number'>18</span>  <span class='chapter-title'>Roads, Rails, Tracts, Buffers, and Spatial joins</span>"
+    ]
+  },
+  {
     "objectID": "syllabus.html",
     "href": "syllabus.html",
     "title": "Appendix A — Course Syllabus",
