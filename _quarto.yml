@@ -43,7 +43,7 @@ book:
 #      - animate.qmd
 #      - dataTheory.qmd
 #      - SoCalEarth.qmd
-#      - assignment4.qmd
+
   appendices: 
     - syllabus.qmd  
     - tools.qmd 

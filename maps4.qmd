@@ -1,0 +1,273 @@
+# Small-Multiples and Data Aggregation {#sec-maps4}
+
+::: {.callout-note appearance="simple"}
+Today we will be focusing on the theory and practice of fancy geospatial data visualization.
+:::
+
+## Visual Categories and Encodings
+
+Let's go back to the beginning of this course. There are 3 categories of information that can be displayed.
+
+1.  Quantitative
+2.  Qualitative
+3.  Spatial
+
+[Lecture 1.2.1](https://radicalresearch.llc/EA078_Fall2026/information.html#categories-of-information-illustrated-by-the-newspaper-weather-visualization)
+
+The three types of data can be encoded in:
+
+-   Geometric primitives - points, lines, and areas
+-   Visual channels - size, color, shape, position, angle, and texture
+
+An advanced spatial visualization covering multiple layers of information needs to use multiple sets of encodings to convey information quickly and intuitively while not overwhelming the audience.
+
+## Small Multiples
+
+Fancy maps need distinct visual encodings, so the eye can be drawn the salient features.
+
+One key way to do this is through ensuring different types/styles/aesthetics are displayed as unique fingerprints of visual encodings.
+
+Another way to do this is through small multiples figures, as we showed in #fig-facetEJMap.  However, that was a `facet_wrap()` done on a static map.  It is also possible to do small multiples with interactive leaflet maps.  
+
+First, get all the standard libraries we need loaded up.
+
+```{r}
+#| label: load libraries
+#| echo: true
+#| message: false
+
+library(tidyverse)
+library(leaflet)
+library(sf)
+library(tigris)
+
+```
+
+Now, we'll need a new library called `leafsync`.
+
+First, install it.
+
+```{r}
+#| label: install leafsync
+#| echo: true
+#| eval: false
+
+install.packages('leafsync')
+
+```
+
+Then load the library.
+
+```{r}
+#| label: load leafsync
+#| echo: true
+#| message: false
+
+library(leafsync)
+
+```
+### Example 1 - SoCalEJ race and ethnicity data
+
+Let's test this out with just Orange County data from SoCalEJ - our robust and useful testing dataset.
+
+First, we pull the data, if it isn't already loaded.
+
+```{r}
+#| label: load SoCalEJ 
+#| echo: true
+
+URL.path <- 'https://raw.githubusercontent.com/RadicalResearchLLC/EA078_Fall2026/main/SoCalEJ.geojson'
+SoCalEJ <- st_read(URL.path) |> 
+  st_transform(crs = 4326) |> 
+  select(white, black, asian, hisp, ACS2024Pop, geometry) |>  # select race/ethnicity variables
+  filter(white >=0 & black >=0)
+
+```
+
+Let's create two figures and save them as individual maps before displaying them using leafsync.  Let's show White, Asian, and Hispanic populations for Orange County. 
+
+First, we create individual maps. The template is shown below for the White population in #fig-White  
+
+```{r}
+#| label: fig-white
+#| echo: true
+#| fig-cap: Percentage of residents by census tract identified as White.
+
+palW <- colorNumeric(palette = 'RdPu', 
+                     domain = c(0,100))
+
+leaflet() |> 
+  addProviderTiles(provider = providers$Esri.WorldGrayCanvas) |> 
+  addPolygons(data = SoCalEJ,
+              color = ~palW(white),
+              fillOpacity = 0.8,
+              stroke = FALSE) |> 
+  addLegend(data = SoCalEJ,
+            pal = palW,
+            values = ~white,
+            title = '% White') |> 
+  setView(lng = -117.3, lat = 34.1, zoom = 9)
+
+```
+
+This is a good map, but is too busy!  We also need to highlight our municipalities.  
+
+Let's pull our municipal boundaries and `st_filter()` our dataset
+
+```{r}
+#| label: municipalities
+#| echo: true
+
+project_places <- places(state = 'CA', cb = T, year = 2024, progress_bar = F) |> 
+  filter(NAME %in% c('Los Angeles',  'Long Beach', 'Anaheim', #'San Diego',  ## NOTE I'm excluding SD for this example
+    'Riverside', 'Irvine', 'San Bernardino', 'Fontana', 'Moreno Valley',
+    'Glendale', 'Ontario', 'Lancaster', 'Victorville', 'Newport Beach',
+    'Buena Park', 'Redlands', 'Palm Springs', 'Claremont', 
+    'Bloomington', 'Mead Valley', 'Santa Fe Springs')) |> 
+  st_transform(crs = 4326)
+
+placeRace <- SoCalEJ |> 
+  st_intersection(project_places) # this clips the tracts to our place boundaries
+
+leaflet() |> 
+  addProviderTiles(provider = providers$Esri.WorldGrayCanvas) |> 
+  addPolygons(data = placeRace,
+              color = ~palW(white),
+              fillOpacity = 0.8,
+              stroke = FALSE,
+              label = ~str_c(white, '%')
+              )|> 
+  addPolylines(data = project_places,
+               color = 'black',
+               weight = 2) |>  
+  addLegend(data = placeRace,
+            pal = palW,
+            values = ~white,
+            title = '% White') |> 
+  setView(lng = -117.3, lat = 34.1, zoom = 8)
+
+
+```
+
+### `leafsync`
+
+1) Make a map of each type we want to show.
+2) Assign the map to a named variable.  In this case, we'll call the maps `white`, `hispanic`, and `aapi` and assign the leaflet maps to those variables using the `<-` operator.
+3) Use the `sync()` function from leafsync to show them.
+
+The code for steps 1 and 2 are just slight variations on the white map we showed above, repeated three times.  
+
+@fig-leafsync shows the end result.  
+
+```{r}
+#| label: fig-leafsync
+#| echo: true
+#| fig-cap: leaflet maps 
+
+white <- 
+  leaflet() |> 
+  addProviderTiles(provider = providers$Esri.WorldGrayCanvas) |> 
+  addPolygons(data = placeRace,
+              color = ~palW(white),
+              fillOpacity = 0.8,
+              weight = 1) |> 
+  addLegend(data = placeRace,
+            pal = palW,
+            values = ~white,
+            title = '% White')
+
+hispanic <- leaflet() |> 
+  addProviderTiles(provider = providers$Esri.WorldGrayCanvas) |> 
+  addPolygons(data = placeRace,
+              color = ~palW(hisp),
+              fillOpacity = 0.8,
+              weight = 1) |> 
+  addLegend(data = placeRace,
+            pal = palW,
+            values = ~hisp,
+            title = '% Hispanic')
+
+asian <- 
+  leaflet() |> 
+  addProviderTiles(provider = providers$Esri.WorldGrayCanvas) |>  
+  addPolygons(data = placeRace,
+              color = ~palW(asian),
+              fillOpacity = 0.8,
+              weight = 1) |> 
+  addLegend(data = placeRace,
+            pal = palW,
+            values = ~asian,
+            title = '% Asian')
+
+black <- 
+  leaflet() |> 
+  addProviderTiles(provider = providers$Esri.WorldGrayCanvas) |>  
+  addPolygons(data = placeRace,
+              color = ~palW(black),
+              fillOpacity = 0.8,
+              weight = 1) |> 
+  addLegend(data = placeRace,
+            pal = palW,
+            values = ~black,
+            title = '% Black')
+
+## This shows all four maps together
+sync(white, hispanic, asian, black)
+        
+```
+
+The cool thing about sync is it zooms in and out as a combination, so if they are all on the same scale, we can really see some differences.  
+
+### Spatial Aggregates
+
+Let's calculate the racial and ethnic percentages by municipality (excluding San Diego).  
+
+One might assume that it is a straight average by jurisdiction.
+
+```{r}
+#| label: estimate municipal demographics
+#| echo: true
+
+placeRace |> 
+  st_set_geometry(value = NULL) |>  #remove the geometry
+  group_by(NAME) |> 
+  summarize(white = round(mean(white),1),
+            hispanic = round(mean(hisp),1),
+            asian = round(mean(asian),1),
+            black = round(mean(black),1)
+  ) |> 
+  arrange(desc(hispanic)) |> 
+  select(NAME, hispanic, white, asian, black)
+
+```
+
+This is an ok first cut, but is inaccurate because census tracts are not equal in population. 
+
+The more correct method requires an extra couple of processing steps.
+
+```{r}
+#| label: more accurate municipal demographics
+#| echo: true
+
+placeRace |> 
+  st_set_geometry(value = NULL) |>  #remove the geometry
+  select(NAME, ACS2024Pop, white, black, asian, hisp) |> 
+  mutate(white2 = white*ACS2024Pop/100,
+         black2 = black*ACS2024Pop/100,
+         asian2 = asian*ACS2024Pop/100,
+         hisp2  = hisp*ACS2024Pop/100) |> 
+  group_by(NAME) |> 
+  summarize(white3 = sum(white2),
+            black3 = sum(black2),
+            hisp3 = sum(hisp2),
+            asian3 = sum(asian2),
+            totalPop = sum(ACS2024Pop)) |> 
+  mutate(white = round(100*white3/totalPop,1),
+            hispanic = round(100*hisp3/totalPop,1),
+            asian = round(100*asian3/totalPop,1),
+            black = round(100*black3/totalPop,1)
+  ) |> 
+  arrange(desc(hispanic)) |> 
+  select(NAME, hispanic, white, asian, black)
+
+```
