@@ -117,7 +117,7 @@ LA |>
   st_transform(crs = 4326)  |> #crs to WGS84
   leaflet()  |>  
   addTiles() |>  
-  addProviderTiles(provider = providers$Stadia.AlidadeSmooth)  |>  
+  addProviderTiles(provider = providers$Esri.WorldGrayCanvas)  |>  
   addPolygons(color = ~palIncome(estimate),
               fillOpacity = 0.7,
               weight = 0.5,

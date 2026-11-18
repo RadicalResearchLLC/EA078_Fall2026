@@ -269,7 +269,7 @@ output$map <- renderLeaflet({
       
       # filter geometry dataset for the user input
      metricSoCal <- SoCal_narrow |> 
-       filter(variable == input$metric) |> 
+       filter(variable == input$metric) 
 
       # Create a dynamic color palette based on the metric
      palM <- colorNumeric(palette = 'magma', 
