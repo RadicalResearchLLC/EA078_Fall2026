@@ -983,6 +983,54 @@
     ]
   },
   {
+    "objectID": "elevation.html",
+    "href": "elevation.html",
+    "title": "20  Elevation and Distance",
+    "section": "",
+    "text": "20.1 Elevation\nWe will use the elevatr package to acquire elevation by distance.\nInstall the package.\ninstall.packages('elevatr')\nNext, get all the standard libraries we need loaded up.\nlibrary(tidyverse)\nlibrary(sf)\nlibrary(tigris)\nlibrary(elevatr)\n\nWarning: package 'elevatr' was built under R version 4.6.2",
+    "crumbs": [
+      "Home",
+      "Unit 4: Special Projects",
+      "<span class='chapter-number'>20</span>  <span class='chapter-title'>Elevation and Distance</span>"
+    ]
+  },
+  {
+    "objectID": "elevation.html#elevation",
+    "href": "elevation.html#elevation",
+    "title": "20  Elevation and Distance",
+    "section": "",
+    "text": "20.1.1 Example 1 - USGS elevation of place centroids\nThe elevatr package pulls elevation for point datasets. This will show two examples for pulling point data elevations.\nFirst, let’s pull the municipalities of interest.\n\nproject_places &lt;- places(state = 'CA', cb = T, year = 2024, progress_bar = F) |&gt; \n  filter(NAME %in% c('Los Angeles',  'Long Beach', 'Anaheim', 'San Diego',  \n    'Riverside', 'Irvine', 'San Bernardino', 'Fontana', 'Moreno Valley',\n    'Glendale', 'Ontario', 'Lancaster', 'Victorville', 'Newport Beach',\n    'Buena Park', 'Redlands', 'Palm Springs', 'Claremont', \n    'Bloomington', 'Mead Valley', 'Santa Fe Springs')) |&gt; \n  st_transform(crs = 4326)\n\nThen, we transform the polygon shapes into centroids to take the geographic center of each municipal place.\n\nplace_centroid &lt;- st_centroid(project_places)\n\nWarning: st_centroid assumes attributes are constant over geometries\n\nggplot() +\n  geom_sf(data = project_places) +\n  geom_sf(data = place_centroid, color = 'red') +\n  theme_void()",
+    "crumbs": [
+      "Home",
+      "Unit 4: Special Projects",
+      "<span class='chapter-number'>20</span>  <span class='chapter-title'>Elevation and Distance</span>"
+    ]
+  },
+  {
+    "objectID": "elevation.html#get-elevation-data",
+    "href": "elevation.html#get-elevation-data",
+    "title": "20  Elevation and Distance",
+    "section": "\n20.2 Get elevation data",
+    "text": "20.2 Get elevation data\nelevatr has multiple methods to get point elevation data.\n- get_elev_point() uses USGS elevation data but is slow\n- get_aws_points() uses AWS raster data and allows one to specify a zoom level for resolution of elevation. Significantly faster.\n\nplace_elev1 &lt;- get_aws_points(place_centroid, \n                              z = 10, ##zoom level\n                              units = 'meters',\n                              progress_bar = F)[[1]] ##this returns the first item of the list\n\nMosaicing & Projecting\n\n\nNote: Elevation units are in meters.\n\n\nOpening up the place_elev1 table shows a new column named elevation.",
+    "crumbs": [
+      "Home",
+      "Unit 4: Special Projects",
+      "<span class='chapter-number'>20</span>  <span class='chapter-title'>Elevation and Distance</span>"
+    ]
+  },
+  {
+    "objectID": "elevation.html#measure-distances",
+    "href": "elevation.html#measure-distances",
+    "title": "20  Elevation and Distance",
+    "section": "\n20.3 Measure distances",
+    "text": "20.3 Measure distances\nThe function st_distance() can calculate distances between two points. These can be Euclidean or Great Circle distances.\nLet’s calculate distances from the Port of Los Angeles. First define the port location.\n\nlat1 &lt;- 33.7673 \nlng1 &lt;- -118.2077\n\nportLA &lt;- data.frame(lng1, lat1) |&gt; \n  st_as_sf(coords = c('lng1', 'lat1'), crs = 4326)\n\nportLA\n\nSimple feature collection with 1 feature and 0 fields\nGeometry type: POINT\nDimension:     XY\nBounding box:  xmin: -118.2077 ymin: 33.7673 xmax: -118.2077 ymax: 33.7673\nGeodetic CRS:  WGS 84\n                   geometry\n1 POINT (-118.2077 33.7673)\n\n\nNext, calculate the distance between the Port and each place centroid.\nThen, add them as a column to our original table.\n\ndistances1 &lt;- as.numeric(st_distance(place_elev1, portLA, \n                                     which = 'Great Circle'))\n\nplace_elev1$distance &lt;- round(distances1,1)\n\nhead(place_elev1)\n\nSimple feature collection with 6 features and 14 fields\nGeometry type: POINT\nDimension:     XY\nBounding box:  xmin: -118.4073 ymin: 32.8311 xmax: -117.1222 ymax: 34.69348\nGeodetic CRS:  WGS 84\n  STATEFP PLACEFP  PLACENS          GEOIDFQ   GEOID        NAME\n1      06   02000 02409704 1600000US0602000 0602000     Anaheim\n2      06   62000 02410965 1600000US0662000 0662000   Riverside\n3      06   43000 02410866 1600000US0643000 0643000  Long Beach\n4      06   66000 02411782 1600000US0666000 0666000   San Diego\n5      06   40130 02411620 1600000US0640130 0640130   Lancaster\n6      06   44000 02410877 1600000US0644000 0644000 Los Angeles\n          NAMELSAD STUSPS STATE_NAME LSAD      ALAND    AWATER\n1     Anaheim city     CA California   25  130232149   1567025\n2   Riverside city     CA California   25  210174363    797658\n3  Long Beach city     CA California   25  131240386  70390689\n4   San Diego city     CA California   25  844568357 120003584\n5   Lancaster city     CA California   25  244189280    651713\n6 Los Angeles city     CA California   25 1218641632  80409616\n                    geometry elevation distance\n1 POINT (-117.8575 33.83899)        66  33326.4\n2 POINT (-117.3949 33.93812)       270  77423.4\n3 POINT (-118.1634 33.80279)        52   5688.6\n4  POINT (-117.1222 32.8311)       124 144960.5\n5 POINT (-118.1753 34.69348)       711 103029.7\n6 POINT (-118.4073 34.11601)       368  42926.4\n\n\n\n20.3.1 Visualize data\nLet’s make a figure showing elevation and distance from the Port of LA by municipality.\n\nplace_elev1 |&gt; \n ggplot(aes(x = distance, y = elevation, label = NAME)) +\n  geom_text(size = 3) +\n  theme_bw() +\n  labs(x = 'Distance from Port of LA (m)',\n       y = 'Elevation (m)')",
+    "crumbs": [
+      "Home",
+      "Unit 4: Special Projects",
+      "<span class='chapter-number'>20</span>  <span class='chapter-title'>Elevation and Distance</span>"
+    ]
+  },
+  {
     "objectID": "syllabus.html",
     "href": "syllabus.html",
     "title": "Appendix A — Course Syllabus",
