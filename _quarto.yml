@@ -37,7 +37,8 @@ book:
       - voting.qmd
       - shiny.qmd
       - roads_rails_tracts_buffers.qmd
-      - maps4.qmd  
+      - maps4.qmd
+      - elevation.qmd
 
 #      - animate.qmd
 #      - dataTheory.qmd
