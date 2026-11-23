@@ -142,3 +142,39 @@ place_elev1 |>
 
 ```
 
+### Bonus Code Chunk
+
+Here's an elevation code chunk for all warehouses within our municipalities of interest.
+
+```{r}
+#| label: Warehouse topo
+#| echo: true
+#| eval: false
+
+WH.url <- 'https://raw.githubusercontent.com/RadicalResearchLLC/WarehouseMap/main/WarehouseCITY/geoJSON/comboFinal.geojson'
+wh_inPlaces <- st_read(WH.url) |>  
+  st_transform(crs = 4326) |> 
+  filter(category == 'Existing') |> 
+  filter(place_name %in% c('Los Angeles',  'Long Beach', 'Anaheim', 
+                     'Riverside', 'Irvine', 'San Bernardino', 'Fontana', 'Moreno Valley',
+                     'Glendale', 'Ontario', 'Lancaster', 'Victorville', 'Newport Beach',
+                     'Buena Park', 'Redlands', 'Palm Springs', 'Claremont', 
+                     'Bloomington', 'Mead Valley', 'Santa Fe Springs')) |> 
+  st_centroid()
+
+ get_wh_elev <- get_aws_points(wh_inPlaces, z = 10, units = 'meters')
+
+ wh_elev<- get_wh_elev[[1]] |> 
+   filter(shape_area > 0)
+ 
+ wh_elev |> 
+   st_set_geometry(value = NULL) |> 
+   ggplot(aes(x = place_name, y = elevation, size = shape_area,
+              color = county)) +
+   geom_point(alpha = 0.5) +
+   theme_bw() +
+   coord_flip() +
+   labs(x = '', y = 'elevation (m)') +
+   theme(legend.position = 'bottom') 
+
+```
